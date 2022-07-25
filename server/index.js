@@ -19,7 +19,7 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
-// BACKEND INITIALIZATION
+// BACKEND INITIALIZATION-
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
