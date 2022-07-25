@@ -29,7 +29,7 @@ function Register({ setToken }) {
     }
     try {
       const result = await axios.post(
-        "https://test-auth-356806.uc.r.appspot.com/signUp",
+        "https://testauthql.herokuapp.com/signUp",
         {
           email,
           password,

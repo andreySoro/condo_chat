@@ -31,7 +31,7 @@ const cache = new InMemoryCache({
 });
 
 const client = new ApolloClient({
-  uri: "https://test-auth-356806.uc.r.appspot.com/graphql",
+  uri: "https://testauthql.herokuapp.com/graphql",
   cache,
   cors: {
     origin: [
