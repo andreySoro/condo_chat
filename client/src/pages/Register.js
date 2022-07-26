@@ -50,9 +50,9 @@ function Register({ setToken }) {
     } catch (error) {
       console.log("ERROR SIGN IN", error);
       setFormError(
-        error.response.data.error.message === "User already exist."
+        error?.response?.data?.error?.message === "User already exist."
           ? ("User already exist, try to sign in.", setRegStatus(true))
-          : error.response.data.error.message
+          : error?.response?.data?.error?.message
       );
     }
 
