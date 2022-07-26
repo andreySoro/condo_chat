@@ -39,10 +39,7 @@ app.post("/signUp", async (req, res) => {
       return false;
     });
 
-  // if (doesUserExist) {
-  //   return res.status(400).send({ error: { message: "User already exist." } });
-  // }
-
+  //UTILITY FUNCTION TO CREATE USER
   const createNewUser = async () => {
     return await axios
       .post(
@@ -57,38 +54,95 @@ app.post("/signUp", async (req, res) => {
       .catch((err) => err.response.data);
   };
 
+  //UTILITY FUNCTION TO SEND EMAIL CONFIRMATION
+  async function sendEmailConfirmation() {
+    console.log("SEND EMAIL VERIFICATION", newUser.idToken);
+    await axios
+      .post(
+        "https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyAfz7a3M2b45CxwPxVVSwtFvXKtDkO37jw",
+        {
+          requestType: "VERIFY_EMAIL",
+          idToken: newUser.idToken,
+        }
+      )
+      .then((res) => {
+        console.log("Email verification sent", res);
+      })
+      .catch((err) => err);
+  }
+
+  //UTILITY FUNCTION TO LOGIN USER
+  const loginUser = async () => {
+    const user = await axios
+      .post(
+        `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=
+  AIzaSyAfz7a3M2b45CxwPxVVSwtFvXKtDkO37jw`,
+        {
+          email: req.body.email,
+          password: req.body.password,
+          returnSecureToken: true,
+        }
+      )
+      .then((res) => res.data)
+      .catch((err) => err);
+    return res
+      .status(200)
+      .send({ user, message: "User exists, email verified" });
+  };
+
   const newUser = doesUserExist ? doesUserExist : await createNewUser();
-  console.log("NEW USER", newUser);
+
+  console.log("NEW USER ====", newUser);
+
+  if (
+    !req.body.emailVerification ||
+    !req.body.emailVerification === undefined
+  ) {
+    if (newUser.localId) {
+      console.log("ID TOKEN TO SEND", newUser.idToken);
+      return res.status(200).send({
+        user: { idToken: newUser.idToken },
+        message: "User exists, email verification turned off",
+      });
+    }
+  }
+
   const isUserEmailVerified = await admin
     .auth()
     .getUser(newUser?.localId ? newUser.localId : newUser.uid)
     .then((res) => res.emailVerified);
 
   console.log("IS EMAIL VERIFIED", isUserEmailVerified);
+
+  //LOGIN USER IF HE IS TRYING TO REGISTER AGAIN AND EMAIL VERIFIED
   if (isUserEmailVerified) {
-    return res.status(200).send({ message: "User exists, email verified" });
+    const user = await axios
+      .post(
+        `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=
+  AIzaSyAfz7a3M2b45CxwPxVVSwtFvXKtDkO37jw`,
+        {
+          email: req.body.email,
+          password: req.body.password,
+          returnSecureToken: true,
+        }
+      )
+      .then((res) => res.data)
+      .catch((err) => err);
+    if (user?.response?.status === 400 && newUser) {
+      return res.status(400).send({
+        error: {
+          message: "User already registered, but password is incorrect",
+        },
+      });
+    }
+    return res
+      .status(200)
+      .send({ user, message: "User exists, email verified" });
   }
 
   if (!isUserEmailVerified) {
-    (async function () {
-      return await axios
-        .post(
-          "https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyAfz7a3M2b45CxwPxVVSwtFvXKtDkO37jw",
-          {
-            requestType: "VERIFY_EMAIL",
-            idToken: newUser.idToken,
-          }
-        )
-        .then((res) => {
-          console.log("Email verification sent", res);
-          res.status(200).send("Email verification sent");
-          return {
-            data1: res.data,
-            data2: res.status,
-          };
-        })
-        .catch((err) => err);
-    })();
+    sendEmailConfirmation(newUser);
+    return res.status(200).send({ message: "User exists, email not verified" });
   }
 
   // if (

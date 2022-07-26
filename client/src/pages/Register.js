@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Spinner from "../components/Spinner";
 import { BrowserRouter as Redirect } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function Register({ setToken }) {
   const [email, setEmail] = useState("");
@@ -10,7 +11,7 @@ function Register({ setToken }) {
   const [color, setColor] = useState("#0275d8");
   const [formError, setFormError] = useState(false);
   const [regStatus, setRegStatus] = useState(false);
-  // const history = useHistory();
+  let navigate = useNavigate();
 
   useEffect(() => {
     const timeOut =
@@ -28,22 +29,22 @@ function Register({ setToken }) {
       return;
     }
     try {
-      const result = await axios.post(
-        "https://testauthql.herokuapp.com/signUp",
-        {
-          email,
-          password,
-        }
-      );
+      const result = await axios.post("http://localhost:5000/signUp", {
+        email,
+        password,
+        emailVerification: true,
+      });
       console.log("RESULT AUTH", result);
       if (
         result.status === 200 &&
-        result.data.message === "User exists, email verified"
+        (result.data.message === "User exists, email verified" ||
+          result.data.message === "User exists, email verification turned off")
       ) {
-        console.log("REDIRECT USER TO A LOGIN");
-        return <Redirect to="/signIn" />;
+        localStorage.setItem("token", result.data.user.idToken);
+        setToken(result.data.user.idToken);
+      } else {
+        setRegStatus(true);
       }
-      // setRegStatus(true);
       // localStorage.setItem("token", result.data.idToken);
       // setToken(result.data.idToken);
     } catch (error) {
@@ -160,9 +161,11 @@ function Register({ setToken }) {
                 We have sent you notification to your email: {email}
               </p>
               <p style={{ fontSize: "18px" }}>
-                You can wait on this page or sign in later when you confirm it.
+                Keep this page open to be automatically redirected.
+                Alternatively, you can sign in later when you confirm it.
               </p>
               <button
+                onClick={() => navigate("/signIn")}
                 type="button"
                 className="mt-2 btn btn-primary"
                 style={{
