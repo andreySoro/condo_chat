@@ -20,34 +20,20 @@ function Signin({ setToken }) {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    // const user =
-    // await signInWithEmailAndPassword(auth, email, password)
-    //   .then((userCredential) => userCredential)
-    //   .catch((error) => {
-    //     const errorCode = error.code;
-    //     const errorMessage = error.message;
-    //     console.log("Error when sign in", errorCode, errorMessage);
-    //   });
-    // const result = await axios.post("http://localhost:5000/signIn", {
-    //   accessToken: user.user.accessToken,
-    //   uid: user.user.uid,
-    // });
-
     try {
       const result = await axios.post(
-        "https://testauthql.herokuapp.com/signIn",
+        "http://localhost:5000/signIn",
+        // "https://testauthql.herokuapp.com/signIn",
         {
           email,
           password,
         }
       );
-      console.log("user result", result);
-
-      localStorage.setItem("token", result.data.idToken);
-      setToken(result.data.idToken);
+      console.log("USER", result);
+      localStorage.setItem("token", result.data.accessToken);
+      setToken(result.data.accessToken);
     } catch (error) {
-      console.log("ERROR SIGN IN", error);
-      setFormError(error.response.data.message);
+      setFormError(error?.response?.data?.error?.message || error?.message);
     }
 
     // setEmail("");

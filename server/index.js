@@ -88,162 +88,11 @@ app.post("/signUp", async (req, res) => {
       email: req.body.email,
     });
     await loacalUser.save();
-    return res
-      .status(201)
-      .send({ user: newUser, message: "User created successfully" });
+    return res.status(201).send({
+      user: newUser,
+      message: "User created successfully",
+    });
   }
-
-  // //UTILITY FUNCTION TO LOGIN USER
-  // const loginUser = async () => {
-  //   const user = await axios
-  //     .post(
-  //       `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=
-  // AIzaSyAfz7a3M2b45CxwPxVVSwtFvXKtDkO37jw`,
-  //       {
-  //         email: req.body.email,
-  //         password: req.body.password,
-  //         returnSecureToken: true,
-  //       }
-  //     )
-  //     .then((res) => res.data)
-  //     .catch((err) => err.response.data);
-  //   console.log("ERROR WHEN LOGIN !!!===", user);
-  //   return user;
-  // };
-
-  // const newUser = doesUserExist ? doesUserExist : await createNewUser();
-
-  // console.log("NEW USER ====", newUser);
-
-  // // CHECKING IF EMAIL VERIFICATION TURNED ON
-  // if (req.body.emailVerification !== true) {
-  //   if (req.body.logInAfterSignUp) {
-  //     if (newUser.localId) {
-  //       return res.status(200).send({
-  //         user: { ...newUser },
-  //         message: "User exist, email verification turned off",
-  //       });
-  //     } else {
-  //       const user = await loginUser();
-  //       if (
-  //         user?.error?.code === 400 &&
-  //         user.error.message === "INVALID_PASSWORD"
-  //       ) {
-  //         return res.status(400).send({
-  //           error: { message: "User exist, but password is incorrect" },
-  //         });
-  //       } else {
-  //         return res.status(200).send({
-  //           user: { ...user },
-  //           message: "User exist, email verification turned off",
-  //         });
-  //       }
-  //     }
-  //   } else {
-  //     return res.status(201).send({
-  //       message: "User created, email verification turned off, sign in off",
-  //     });
-  //   }
-  // }
-
-  // const isUserEmailVerified = await admin
-  //   .auth()
-  //   .getUser(newUser?.localId ? newUser.localId : newUser.uid)
-  //   .then((res) => res.emailVerified);
-
-  // console.log("IS EMAIL VERIFIED", isUserEmailVerified);
-
-  // //LOGIN USER IF HE IS TRYING TO REGISTER AGAIN AND EMAIL VERIFIED
-  // if (isUserEmailVerified) {
-  //   const user = await loginUser();
-  //   if (user?.response?.status === 400 && newUser) {
-  //     return res.status(400).send({
-  //       error: {
-  //         message: "User already registered, but password is incorrect",
-  //       },
-  //     });
-  //   }
-  //   return res
-  //     .status(200)
-  //     .send({ user, message: "User exist, email verified" });
-  // }
-
-  // if (!isUserEmailVerified) {
-  //   if (req.body.emailVerification && !req.body.logInAfterSignUp) {
-  //     sendEmailConfirmation(newUser);
-  //     return res
-  //       .status(200)
-  //       .send({ message: "User exist or created, email not verified" });
-  //   }
-  //   if (!req.body.emailVerification && req.body.logInAfterSignUp) {
-  //     const user = await loginUser();
-  //     if (user?.response?.status === 400 && newUser) {
-  //       return res.status(400).send({
-  //         error: {
-  //           message: "User already registered, but password is incorrect",
-  //         },
-  //       });
-  //     }
-  //     return res.status(200).send({ user, message: "User exist" });
-  //   } else if (req.body.emailVerification && req.body.logInAfterSignUp) {
-  //     return res.status(400).send({
-  //       error: {
-  //         message:
-  //           "To sign in user after sign up, email verification must be turned off and logInAfterSignUp set to true",
-  //       },
-  //     });
-  //   }
-  // }
-
-  // if (
-  //   doesUserExist?.message ===
-  //   "There is no user record corresponding to the provided identifier."
-  // ) {
-  //   // console.log("USEEEER", await admin.auth().getUser(newUser.localId));
-  //   sendVerificationEmail();
-  //   console.log("THIS IS THE EMAIL VERIFICATION CODE", emailVer);
-  // } else if (doesUserExist && isUserEmailVerified === false) {
-  //   sendVerificationEmail();
-  // }
-  // //FIREBASE
-  // newUser = await axios
-  //   .post(
-  //     "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAfz7a3M2b45CxwPxVVSwtFvXKtDkO37jw",
-  //     {
-  //       email: req.body.email,
-  //       password: req.body.password,
-  //       returnSecureToken: true,
-  //     }
-  //   )
-  //   .then((res) => res.data)
-  //   .catch((err) => err.response.data);
-
-  // await admin
-  //   .auth()
-  //   .createUser({
-  //     email: req.body.email,
-  //     password: req.body.password,
-  //   })
-  //   .then((userRecord) => {
-  //     // console.log("Successfully created new user:", userRecord);
-  //     return userRecord;
-  //   })
-  //   .catch((error) => {
-  //     console.log("Error creating new user:", error);
-  //   });
-
-  // if (!newUser) {
-  //   res.status(400).send("Cannot create user");
-  //   return;
-  // }
-  // console.log("Successfully created new user:", newUser);
-  // //MONGODB
-  // const user = new User({
-  //   id: newUser.localId,
-  //   email: newUser.email,
-  // });
-  // await user.save();
-  // res.status(200).send(newUser);
 });
 
 app.post("/signIn", async (req, res) => {
@@ -268,63 +117,23 @@ app.post("/signIn", async (req, res) => {
     .then((res) => res.data)
     .catch((err) => err);
 
-  res.status(200).send(user);
-  console.log("DA USER", user);
-  console.log("USEEEER", await admin.auth().getUser(user.localId));
-  // const userUid = admin
-  //   .auth()
-  //   .verifyIdToken(user.idToken)
-  //   .then((decodedToken) => decodedToken.uid)
-  //   .catch((error) => {
-  //     // Handle error
-  //     console.log("Error verifying token", error);
-  //   });
+  console.log("DA USER", user.response);
+  if (user?.response?.data?.error?.code === 400) {
+    return res.status(400).send({
+      error: {
+        message: "User email or password is incorrect",
+      },
+    });
+  }
+
   const localUser = await User.findOne({ id: user.localId });
-  console.log("LOCAL USER = ", localUser);
-  // admin
-  //   .auth()
-  //   .getUser(req.body.uid)
-  //   .then((userRecord) => {
-  //     // See the UserRecord reference doc for the contents of userRecord.
-  //     console.log("Successfully fetched user data", userRecord.toJSON());
-  //   })
-  //   .catch((error) => {
-  //     console.log("Error fetching user data:", error);
-  //   });
 
-  //FIREBASE
-  // const userFire = await auth
-  //   .signInWithEmailAndPassword(req.body.email, req.body.password)
-  //   .then((res) => res)
-  //   .catch(function (error) {
-  //     console.log("fifrebase error", error);
-  //   });
-
-  // if (!userFire) {
-  //   res
-  //     .status(400)
-  //     .send({ message: "Invalid request, incorrect email or password" });
-  //   return;
-  // }
-  // const userMongo = await User.findOne({ id: userFire.user.uid });
-
-  // if (!userMongo) {
-  //   res.status(400).send({ message: "User does not exist" });
-  //   return;
-  // }
-  // if (
-  //   userMongo.email !== userFire.user.email &&
-  //   userMongo.id !== userFire.user.uid
-  // ) {
-  //   res.status(400).send({ error: { message: "User does not exist" } });
-  //   return;
-  // }
-  // res.status(200).send({
-  //   id: userFire.user.uid,
-  //   email: userFire.user.email,
-  //   validationResult: userFire.user.toJSON().stsTokenManager,
-  // });
-  // res.send(`Hello there ${user.user.email}`);
+  return res.status(200).send({
+    refreshToken: user.refreshToken,
+    accessToken: user.idToken,
+    email: user.email,
+    id: localUser.id,
+  });
 });
 
 // CONNECT TO DB

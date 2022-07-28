@@ -19,15 +19,15 @@ function Register({ setToken }) {
       formError &&
       setTimeout(() => {
         setFormError(null);
-        setFormSuccess(null);
       }, 7500);
     return () => clearTimeout(timeOut);
-  }, [formError, formSuccess]);
+  }, [formError]);
 
   useEffect(() => {
     const timeOut2 =
       formSuccess &&
       setTimeout(() => {
+        setFormSuccess(null);
         navigate("/signIn");
       }, 3000);
     return () => clearTimeout(timeOut2);
@@ -46,7 +46,6 @@ function Register({ setToken }) {
         {
           email,
           password,
-          emailVerification: true,
         }
       );
       console.log("RESULT AUTH", result);
@@ -54,7 +53,7 @@ function Register({ setToken }) {
         result.status === 201 &&
         result.data.message === "User created successfully"
       ) {
-        setFormSuccess(result.data.message);
+        setFormSuccess(result.data.message + ", redirrecting");
       } else if (
         result.status === 201 &&
         result.data.message === "User created, email verification sent"
@@ -63,15 +62,8 @@ function Register({ setToken }) {
       } else {
         setRegStatus(true);
       }
-      // localStorage.setItem("token", result.data.idToken);
-      // setToken(result.data.idToken);
     } catch (error) {
-      console.log("ERROR SIGN IN", error);
-      setFormError(
-        error?.response?.data?.error?.message === "User already exist."
-          ? ("User already exist, try to sign in.", setRegStatus(true))
-          : error?.response?.data?.error?.message
-      );
+      setFormError(error?.response?.data?.error?.message || error?.message);
     }
 
     // setEmail("");
@@ -148,7 +140,7 @@ function Register({ setToken }) {
               }}
             >
               <p style={{ color: "white", padding: 0, margin: 0 }}>
-                {formSuccess}
+                {formSuccess} <Spinner />
               </p>
             </div>
           )}
