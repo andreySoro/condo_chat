@@ -10,6 +10,7 @@ function Register({ setToken }) {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [color, setColor] = useState("#0275d8");
   const [formError, setFormError] = useState(false);
+  const [formSuccess, setFormSuccess] = useState(false);
   const [regStatus, setRegStatus] = useState(false);
   let navigate = useNavigate();
 
@@ -18,9 +19,19 @@ function Register({ setToken }) {
       formError &&
       setTimeout(() => {
         setFormError(null);
-      }, 5000);
+        setFormSuccess(null);
+      }, 7500);
     return () => clearTimeout(timeOut);
-  }, [formError]);
+  }, [formError, formSuccess]);
+
+  useEffect(() => {
+    const timeOut2 =
+      formSuccess &&
+      setTimeout(() => {
+        navigate("/signIn");
+      }, 3000);
+    return () => clearTimeout(timeOut2);
+  }, [formSuccess]);
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -29,19 +40,26 @@ function Register({ setToken }) {
       return;
     }
     try {
-      const result = await axios.post("http://localhost:5000/signUp", {
-        email,
-        password,
-        emailVerification: true,
-      });
+      const result = await axios.post(
+        "http://localhost:5000/signUp",
+        // "https://testauthql.herokuapp.com/signUp",
+        {
+          email,
+          password,
+          emailVerification: true,
+        }
+      );
       console.log("RESULT AUTH", result);
       if (
-        result.status === 200 &&
-        (result.data.message === "User exists, email verified" ||
-          result.data.message === "User exists, email verification turned off")
+        result.status === 201 &&
+        result.data.message === "User created successfully"
       ) {
-        localStorage.setItem("token", result.data.user.idToken);
-        setToken(result.data.user.idToken);
+        setFormSuccess(result.data.message);
+      } else if (
+        result.status === 201 &&
+        result.data.message === "User created, email verification sent"
+      ) {
+        navigate("/signIn");
       } else {
         setRegStatus(true);
       }
@@ -117,6 +135,20 @@ function Register({ setToken }) {
             >
               <p style={{ color: "white", padding: 0, margin: 0 }}>
                 {formError}
+              </p>
+            </div>
+          )}
+          {formSuccess && (
+            <div
+              className="text-center d-flex align-items-center justify-content-center bg-success mb-3"
+              style={{
+                width: "100%",
+                borderRadius: "5px",
+                padding: "2px",
+              }}
+            >
+              <p style={{ color: "white", padding: 0, margin: 0 }}>
+                {formSuccess}
               </p>
             </div>
           )}

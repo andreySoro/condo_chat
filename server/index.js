@@ -55,14 +55,14 @@ app.post("/signUp", async (req, res) => {
   };
 
   //UTILITY FUNCTION TO SEND EMAIL CONFIRMATION
-  async function sendEmailConfirmation() {
-    console.log("SEND EMAIL VERIFICATION", newUser.idToken);
+  async function sendEmailConfirmation(idToken) {
+    console.log("SEND EMAIL VERIFICATION", idToken);
     await axios
       .post(
         "https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyAfz7a3M2b45CxwPxVVSwtFvXKtDkO37jw",
         {
           requestType: "VERIFY_EMAIL",
-          idToken: newUser.idToken,
+          idToken: idToken,
         }
       )
       .then((res) => {
@@ -71,79 +71,129 @@ app.post("/signUp", async (req, res) => {
       .catch((err) => err);
   }
 
-  //UTILITY FUNCTION TO LOGIN USER
-  const loginUser = async () => {
-    const user = await axios
-      .post(
-        `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=
-  AIzaSyAfz7a3M2b45CxwPxVVSwtFvXKtDkO37jw`,
-        {
-          email: req.body.email,
-          password: req.body.password,
-          returnSecureToken: true,
-        }
-      )
-      .then((res) => res.data)
-      .catch((err) => err);
-    return res
-      .status(200)
-      .send({ user, message: "User exists, email verified" });
-  };
-
-  const newUser = doesUserExist ? doesUserExist : await createNewUser();
-
-  console.log("NEW USER ====", newUser);
-
-  if (
-    !req.body.emailVerification ||
-    !req.body.emailVerification === undefined
-  ) {
-    if (newUser.localId) {
-      console.log("ID TOKEN TO SEND", newUser.idToken);
-      return res.status(200).send({
-        user: { idToken: newUser.idToken },
-        message: "User exists, email verification turned off",
-      });
+  if (doesUserExist) {
+    return res.status(400).send({
+      error: {
+        message: "User already exist, try to sign in or reset your password",
+      },
+    });
+  } else {
+    const newUser = await createNewUser();
+    if (req.body.emailVerification) {
+      sendEmailConfirmation(newUser.idToken);
     }
-  }
 
-  const isUserEmailVerified = await admin
-    .auth()
-    .getUser(newUser?.localId ? newUser.localId : newUser.uid)
-    .then((res) => res.emailVerified);
-
-  console.log("IS EMAIL VERIFIED", isUserEmailVerified);
-
-  //LOGIN USER IF HE IS TRYING TO REGISTER AGAIN AND EMAIL VERIFIED
-  if (isUserEmailVerified) {
-    const user = await axios
-      .post(
-        `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=
-  AIzaSyAfz7a3M2b45CxwPxVVSwtFvXKtDkO37jw`,
-        {
-          email: req.body.email,
-          password: req.body.password,
-          returnSecureToken: true,
-        }
-      )
-      .then((res) => res.data)
-      .catch((err) => err);
-    if (user?.response?.status === 400 && newUser) {
-      return res.status(400).send({
-        error: {
-          message: "User already registered, but password is incorrect",
-        },
-      });
-    }
+    const loacalUser = new User({
+      id: newUser.localId,
+      email: req.body.email,
+    });
+    await loacalUser.save();
     return res
-      .status(200)
-      .send({ user, message: "User exists, email verified" });
+      .status(201)
+      .send({ user: newUser, message: "User created successfully" });
   }
 
-  if (!isUserEmailVerified) {
-    sendEmailConfirmation(newUser);
-    return res.status(200).send({ message: "User exists, email not verified" });
-  }
+  // //UTILITY FUNCTION TO LOGIN USER
+  // const loginUser = async () => {
+  //   const user = await axios
+  //     .post(
+  //       `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=
+  // AIzaSyAfz7a3M2b45CxwPxVVSwtFvXKtDkO37jw`,
+  //       {
+  //         email: req.body.email,
+  //         password: req.body.password,
+  //         returnSecureToken: true,
+  //       }
+  //     )
+  //     .then((res) => res.data)
+  //     .catch((err) => err.response.data);
+  //   console.log("ERROR WHEN LOGIN !!!===", user);
+  //   return user;
+  // };
+
+  // const newUser = doesUserExist ? doesUserExist : await createNewUser();
+
+  // console.log("NEW USER ====", newUser);
+
+  // // CHECKING IF EMAIL VERIFICATION TURNED ON
+  // if (req.body.emailVerification !== true) {
+  //   if (req.body.logInAfterSignUp) {
+  //     if (newUser.localId) {
+  //       return res.status(200).send({
+  //         user: { ...newUser },
+  //         message: "User exist, email verification turned off",
+  //       });
+  //     } else {
+  //       const user = await loginUser();
+  //       if (
+  //         user?.error?.code === 400 &&
+  //         user.error.message === "INVALID_PASSWORD"
+  //       ) {
+  //         return res.status(400).send({
+  //           error: { message: "User exist, but password is incorrect" },
+  //         });
+  //       } else {
+  //         return res.status(200).send({
+  //           user: { ...user },
+  //           message: "User exist, email verification turned off",
+  //         });
+  //       }
+  //     }
+  //   } else {
+  //     return res.status(201).send({
+  //       message: "User created, email verification turned off, sign in off",
+  //     });
+  //   }
+  // }
+
+  // const isUserEmailVerified = await admin
+  //   .auth()
+  //   .getUser(newUser?.localId ? newUser.localId : newUser.uid)
+  //   .then((res) => res.emailVerified);
+
+  // console.log("IS EMAIL VERIFIED", isUserEmailVerified);
+
+  // //LOGIN USER IF HE IS TRYING TO REGISTER AGAIN AND EMAIL VERIFIED
+  // if (isUserEmailVerified) {
+  //   const user = await loginUser();
+  //   if (user?.response?.status === 400 && newUser) {
+  //     return res.status(400).send({
+  //       error: {
+  //         message: "User already registered, but password is incorrect",
+  //       },
+  //     });
+  //   }
+  //   return res
+  //     .status(200)
+  //     .send({ user, message: "User exist, email verified" });
+  // }
+
+  // if (!isUserEmailVerified) {
+  //   if (req.body.emailVerification && !req.body.logInAfterSignUp) {
+  //     sendEmailConfirmation(newUser);
+  //     return res
+  //       .status(200)
+  //       .send({ message: "User exist or created, email not verified" });
+  //   }
+  //   if (!req.body.emailVerification && req.body.logInAfterSignUp) {
+  //     const user = await loginUser();
+  //     if (user?.response?.status === 400 && newUser) {
+  //       return res.status(400).send({
+  //         error: {
+  //           message: "User already registered, but password is incorrect",
+  //         },
+  //       });
+  //     }
+  //     return res.status(200).send({ user, message: "User exist" });
+  //   } else if (req.body.emailVerification && req.body.logInAfterSignUp) {
+  //     return res.status(400).send({
+  //       error: {
+  //         message:
+  //           "To sign in user after sign up, email verification must be turned off and logInAfterSignUp set to true",
+  //       },
+  //     });
+  //   }
+  // }
 
   // if (
   //   doesUserExist?.message ===
