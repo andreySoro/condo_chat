@@ -22,7 +22,7 @@ router.post("/", async (req, res) => {
   //UTILITY FUNCTION TO CREATE USER
   const createNewUser = async () => {
     return await axios
-      .post(":signUp?key=" + process.env.FIREBASE_API_KEY, {
+      .post("/accounts:signUp?key=" + process.env.FIREBASE_API_KEY, {
         email: req.body.email,
         password: req.body.password,
         returnSecureToken: true,
@@ -34,7 +34,7 @@ router.post("/", async (req, res) => {
   //UTILITY FUNCTION TO SEND EMAIL CONFIRMATION
   async function sendEmailConfirmation(idToken) {
     await axios
-      .post(":sendOobCode?key=" + process.env.FIREBASE_API_KEY, {
+      .post("/accounts:sendOobCode?key=" + process.env.FIREBASE_API_KEY, {
         requestType: "VERIFY_EMAIL",
         idToken: idToken,
       })

@@ -10,7 +10,6 @@ const axiosConfig = axios.create({
 
 axiosConfig.interceptors.request.use(async (request) => {
   const requestConfig = { ...request };
-  //   requestConfig.headers.common.Authorization = `Bearer ${auth_token}`;
 
   return requestConfig;
 });

@@ -11,7 +11,9 @@ import {
 import Signin from "./pages/Signin";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
+import axios from "axios";
 
+//GRAPH QL SETUP
 const cache = new InMemoryCache({
   typePolicies: {
     Query: {
@@ -49,9 +51,25 @@ function App() {
   useEffect(() => {
     const refresh =
       token &&
-      setInterval(() => {
-        console.log("tokenRefreshed");
-      }, 7500);
+      setInterval(async () => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        const result = await axios.post("http://localhost:5000/refreshToken", {
+          refreshToken: user.refreshToken,
+        });
+        if (result.data.access_token) {
+          setToken(result.data.access_token);
+          localStorage.setItem("token", result.data.access_token);
+          const newUser = {
+            ...user,
+            accessToken: result.data.access_token,
+            expiresIn: result.data.expires_in,
+            refreshToken: result.data.refresh_token,
+          };
+          localStorage.setItem("user", JSON.stringify(newUser));
+          console.log("NEW USER =", newUser);
+        }
+        console.log("RESULT", result);
+      }, 60000);
     return () => {
       clearInterval(refresh);
     };

@@ -12,6 +12,7 @@ const schema = require("./schema/schema");
 const signUp = require("./routes/auth/signUp");
 const signIn = require("./routes/auth/signIn");
 const forgotPassword = require("./routes/auth/forgotPassword");
+const refreshToken = require("./routes/auth/refreshToken");
 
 //FIREBASE ADMIN SDK INIT
 const admin = require("firebase-admin");
@@ -25,14 +26,11 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-//SIGN UP
-app.use("/signUp", signUp);
-
-//SIGN IN
+//AUTH RELATED ROUTES
 app.use("/signIn", signIn);
-
-//FORGOT PASSWORD
+app.use("/signUp", signUp);
 app.use("/forgotPassword", forgotPassword);
+app.use("/refreshToken", refreshToken);
 
 // CONNECT TO DB
 connectDB();

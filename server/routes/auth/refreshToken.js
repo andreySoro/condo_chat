@@ -4,16 +4,16 @@ const axios = require("../../config/axiosConfig.js");
 
 router.use("/", async (req, res) => {
   try {
-    await axios.post(
-      "/accounts:sendOobCode?key=" + process.env.FIREBASE_API_KEY,
+    const result = await axios.post(
+      "/token?key=" + process.env.FIREBASE_API_KEY,
       {
-        requestType: "PASSWORD_RESET",
-        email: req.body.email,
+        grant_type: "refresh_token",
+        refresh_token: req.body.refreshToken,
       }
     );
-    return res.status(200).send({ message: "Email sent successfully" });
+
+    return res.status(200).send(result.data);
   } catch (error) {
-    console.log("ERROR FORGOT PASSWORD", error);
     return res.status(400).send(error.message);
   }
 });

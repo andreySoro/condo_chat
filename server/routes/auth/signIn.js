@@ -14,7 +14,7 @@ router.post("/", async (req, res) => {
   }
 
   const user = await axios
-    .post(":signInWithPassword?key=" + process.env.FIREBASE_API_KEY, {
+    .post("/accounts:signInWithPassword?key=" + process.env.FIREBASE_API_KEY, {
       email: req.body.email,
       password: req.body.password,
       returnSecureToken: true,
