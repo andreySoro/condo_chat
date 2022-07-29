@@ -51,7 +51,8 @@ function Register({ setToken }) {
       console.log("RESULT AUTH", result);
       if (
         result.status === 201 &&
-        result.data.message === "User created successfully"
+        result.data.message === "User created successfully" &&
+        !result.data.emailVerification
       ) {
         setFormSuccess(result.data.message + ", redirrecting");
       } else if (

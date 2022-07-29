@@ -1,52 +1,42 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { auth } from "../firebaseConfig";
-import { signInWithEmailAndPassword, signOut } from "firebase/auth";
+import Spinner from "../components/Spinner";
+import { useNavigate } from "react-router-dom";
 
-function Signin({ setToken }) {
+function ForgotPassword() {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [formError, setFormError] = useState(null);
+  const [formSuccess, setFormSuccess] = useState(null);
+  let navigate = useNavigate();
+
   useEffect(() => {
-    const timeOut =
-      formError &&
+    const timeOut2 =
+      formSuccess &&
       setTimeout(() => {
-        console.log("INSIDE TIMEOUT");
-        setFormError(null);
-      }, 5000);
-    return () => clearTimeout(timeOut);
-  }, [formError]);
+        setFormSuccess(null);
+        navigate("/signIn");
+      }, 3500);
+    return () => clearTimeout(timeOut2);
+  }, [formSuccess]);
 
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
-      const result = await axios.post(
-        "http://localhost:5000/signIn",
-        // "https://testauthql.herokuapp.com/signIn",
-        {
-          email,
-          password,
-        }
-      );
-      console.log("USER", result);
-      if (result.data.emailVerified) {
-        localStorage.setItem("user", JSON.stringify(result.data));
-        setToken(result.data.accessToken);
-      } else {
-        setFormError("Email is not verified");
-      }
+      const result = await axios.post("http://localhost:5000/forgotPassword", {
+        email,
+      });
+      setFormSuccess(result.data.message);
+      setEmail("");
+      console.log("FORGOT PASSWORD SUCCESS RESULT", result);
     } catch (error) {
       setFormError(error?.response?.data?.error?.message || error?.message);
     }
-
-    // setEmail("");
-    // setPassword("");
   };
 
   return (
     <div className="container" style={{ maxWidth: "650px" }}>
       <div className="text-center">
-        <h2>Sign in</h2>
+        <h2>Forgot password</h2>
       </div>
       <form onSubmit={onSubmit}>
         <div className="mb-3">
@@ -63,18 +53,7 @@ function Signin({ setToken }) {
           />
           <div id="emailHelp" className="form-text"></div>
         </div>
-        <div className="mb-3">
-          <label htmlFor="exampleInputPassword1" className="form-label">
-            Password
-          </label>
-          <input
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            type="password"
-            className="form-control"
-            id="exampleInputPassword1"
-          />
-        </div>
+
         {formError && (
           <div
             className="text-center d-flex align-items-center justify-content-center bg-danger mb-3"
@@ -87,18 +66,29 @@ function Signin({ setToken }) {
             <p style={{ color: "white", padding: 0, margin: 0 }}>{formError}</p>
           </div>
         )}
+        {formSuccess && (
+          <div
+            className="text-center d-flex align-items-center justify-content-center bg-success mb-3"
+            style={{
+              width: "100%",
+              borderRadius: "5px",
+              padding: "2px",
+            }}
+          >
+            <p style={{ color: "white", padding: 0, margin: 0 }}>
+              {formSuccess} <Spinner />
+            </p>
+          </div>
+        )}
         <div className="text-center d-flex justify-content-center">
           <div className="form-check d-flex">
             <p style={{ marginRight: "5px" }}>Don't have an account?</p>
             <a href="/signUp">
               <p>Sign up</p>
             </a>
-          </div>
-        </div>
-        <div className="text-center d-flex justify-content-center">
-          <div className="mb-3 form-check d-flex">
-            <a style={{ color: "#555" }} href="/forgotPassword">
-              <p>Forgot password</p>
+            <p style={{ marginLeft: "5px", marginRight: "5px" }}>or</p>
+            <a href="/signIn">
+              <p>Sign in</p>
             </a>
           </div>
         </div>
@@ -117,4 +107,4 @@ function Signin({ setToken }) {
   );
 }
 
-export default Signin;
+export default ForgotPassword;
