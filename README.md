@@ -9,7 +9,8 @@
 - create .env file in the root directory, add folowing variables, which can be found in firebase config file after creating web project.
 
 ```
-**NODE_ENV=** "development"
+**NODE_ENV=**
+ "development"
 MONGO_URI ="your mongo db connection link"
 FIREBASE_API_KEY="your key"
 FIREBASE_AUTH_DOMAIN="your domain"
