@@ -15,7 +15,7 @@ NODE_ENV="development"
 MONGO_URI ="your mongo db connection link"
 FIREBASE_API_KEY="your key"
 FIREBASE_AUTH_DOMAIN="your domain"
-BASE_URL=https://identitytoolkit.googleapis.com/v1
+BASE_URL="https://identitytoolkit.googleapis.com/v1"
 ```
 
 - run `yarn` or `npm install` in the root of the project
