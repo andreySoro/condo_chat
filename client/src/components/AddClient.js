@@ -34,11 +34,6 @@ function AddClient({ setToken }) {
     setPhone("");
   };
 
-  const signOut = () => {
-    localStorage.removeItem("token");
-    setToken(null);
-  };
-
   return (
     <>
       <button
@@ -50,12 +45,6 @@ function AddClient({ setToken }) {
         <div className="d-flex align-items-center">
           <FaUser className="icon" />
           <div>Add Client</div>
-        </div>
-      </button>
-      <button onClick={signOut} type="button" className="btn btn-primary">
-        <div className="d-flex align-items-center">
-          <FaUser className="icon" />
-          <div>Sign out</div>
         </div>
       </button>
 

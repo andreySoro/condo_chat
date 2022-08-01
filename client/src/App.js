@@ -12,6 +12,8 @@ import Signin from "./pages/Signin";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import axios from "axios";
+import NotFound from "./pages/404";
+import Project from "./pages/Project";
 
 //GRAPH QL SETUP
 const cache = new InMemoryCache({
@@ -34,7 +36,7 @@ const cache = new InMemoryCache({
 });
 
 const client = new ApolloClient({
-  uri: "https://testauthql.herokuapp.com/graphql",
+  uri: "http://localhost:5000/graphql", //"https://testauthql.herokuapp.com/graphql",
   cache,
   cors: {
     origin: [
@@ -48,6 +50,7 @@ function App() {
   const [token, setToken] = useState(null);
   const [tokenExpiration, setTokenExpiration] = useState(null);
 
+  //TOKEN REFRESH
   useEffect(() => {
     const refresh =
       token &&
@@ -69,18 +72,15 @@ function App() {
           console.log("NEW USER =", newUser);
         }
         console.log("RESULT", result);
-      }, 60000);
+      }, tokenExpiration * 1000 - 300000);
     return () => {
       clearInterval(refresh);
     };
   }, [token, tokenExpiration]);
 
-  console.log(tokenExpiration);
   useEffect(() => {
     if (token) {
       localStorage.setItem("token", token);
-    } else {
-      localStorage.removeItem("token");
     }
 
     const user = JSON.parse(localStorage.getItem("user"));
@@ -134,6 +134,8 @@ function App() {
                   )
                 }
               />
+              <Route path="*" element={<NotFound />} />
+              <Route path="/project/:id" element={<Project />} />
             </Routes>
           </div>
         </Router>

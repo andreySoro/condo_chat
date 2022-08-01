@@ -6,7 +6,12 @@ import Spinner from "./Spinner.js";
 function Clients() {
   const { loading, error, data } = useQuery(ClientQueries.GET_CLIENTS);
 
-  if (loading) return <Spinner />;
+  if (loading)
+    return (
+      <div style={{ minHeight: "150px" }}>
+        <Spinner />
+      </div>
+    );
   if (error) return <p>Something went wrong :(</p>;
   return (
     <>

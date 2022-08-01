@@ -28,9 +28,9 @@ const ProjectType = new GraphQLObjectType({
   name: "Project",
   fields: () => ({
     id: { type: GraphQLID },
-    clientId: { type: GraphQLString },
     name: { type: GraphQLString },
     description: { type: GraphQLString },
+    clientId: { type: GraphQLID },
     status: { type: GraphQLString },
     client: {
       type: ClientType,
@@ -105,6 +105,11 @@ const RootMutation = new GraphQLObjectType({
         id: { type: new GraphQLNonNull(GraphQLID) },
       },
       resolve(parent, args) {
+        Project.find({ clientId: args.id }).then((projects) => {
+          projects.forEach((project) => {
+            project.remove();
+          });
+        });
         return Client.findByIdAndRemove(args.id);
       },
     },
@@ -126,7 +131,7 @@ const RootMutation = new GraphQLObjectType({
           }),
           defaultValue: "Not started",
         },
-        clientId: { type: new GraphQLNonNull(GraphQLString) },
+        clientId: { type: new GraphQLNonNull(GraphQLID) },
       },
       resolve(parent, args) {
         const project = new Project({
@@ -152,7 +157,7 @@ const RootMutation = new GraphQLObjectType({
     updateProject: {
       type: ProjectType,
       args: {
-        id: { type: new GraphQLNonNull(GraphQLString) },
+        id: { type: new GraphQLNonNull(GraphQLID) },
         name: { type: GraphQLString },
         description: { type: GraphQLString },
         status: {

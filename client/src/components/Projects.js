@@ -6,7 +6,12 @@ import ProjectCard from "./ProjectCard";
 function Projects() {
   const { loading, error, data } = useQuery(ProjectQueries.GET_PROJECTS);
 
-  if (loading) return <Spinner />;
+  if (loading)
+    return (
+      <div style={{ minHeight: "150px" }}>
+        <Spinner />
+      </div>
+    );
   if (error) return <p>Something went wrong :(</p>;
 
   return (

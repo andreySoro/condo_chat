@@ -7,6 +7,7 @@ const connectDB = require("./config/db");
 const cors = require("cors");
 const { graphqlHTTP } = require("express-graphql");
 const schema = require("./schema/schema");
+const requireAuth = require("./middleware/auth.check");
 
 // IMPORTED ROUTES
 const signUp = require("./routes/auth/signUp");
@@ -31,6 +32,9 @@ app.use("/signIn", signIn);
 app.use("/signUp", signUp);
 app.use("/forgotPassword", forgotPassword);
 app.use("/refreshToken", refreshToken);
+app.get("/testAuth", requireAuth, (req, res) => {
+  res.status(200).send("You are authorized");
+});
 
 // CONNECT TO DB
 connectDB();
