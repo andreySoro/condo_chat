@@ -10,8 +10,8 @@
 
 ```
 NODE_ENV = 'development'
-MONGO_URI - *your mongo db connection link*
-FIREBASE_API_KEY=*your key*
+MONGO_URI = *your mongo db connection link*
+FIREBASE_API_KEY= *your key*
 FIREBASE_AUTH_DOMAIN="*your domain*"
 BASE_URL =https://identitytoolkit.googleapis.com/v1
 ```
