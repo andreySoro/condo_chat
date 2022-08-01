@@ -21,6 +21,7 @@ router.post("/", async (req, res) => {
 
   //UTILITY FUNCTION TO CREATE USER
   const createNewUser = async () => {
+    console.log("DA USER BEING PASSED IN: ", req.body.email, req.body.password);
     return await axios
       .post("/accounts:signUp?key=" + process.env.FIREBASE_API_KEY, {
         email: req.body.email,
