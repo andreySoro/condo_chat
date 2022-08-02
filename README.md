@@ -7,8 +7,8 @@
 - generate firebase project
 - turn on [authentication](https://console.firebase.google.com/project/_/authentication/providers)
 - create [web project](https://console.firebase.google.com/project/_/overview)
-- go to [service accounts](https://console.firebase.google.com/project/_/settings/serviceaccounts/adminsdk) and click Generate new private key. Put the file into the root of the project, re-name the file `serviceAccountKey.json`
-- create .env file in the root directory, add folowing variables, which can be found in firebase config file after creating web project.
+- go to [service accounts](https://console.firebase.google.com/project/_/settings/serviceaccounts/adminsdk) and click Generate new private key. Put generated file into the root of the project, re-name it to `serviceAccountKey.json`
+- create .env file in the root directory, add folowing variables, which can be found in firebase config file after creating web project
 
 ```
 NODE_ENV="development"
@@ -20,7 +20,7 @@ BASE_URL="https://identitytoolkit.googleapis.com/v1"
 
 - run `yarn` or `npm install` in the root of the project
 
-- start server with `yarn dev` or `npm run dev`
+- start the server with `yarn dev` or `npm run dev`
 
 ### What's used
 
@@ -37,3 +37,9 @@ BASE_URL="https://identitytoolkit.googleapis.com/v1"
 - Forgot password `/forgotPassword` (email link)
 - Refresh Token `/refreshToken`
 - Authentication middleware (checking accessToken validity, could be added to routes)
+
+### GraphQL
+
+- Default schema for graphql is created in `schema` folder (if you don't need GQL this could be deleted)
+- Default mongoose models are created and located in `models` folder (can also be deleted and/or modified if necessary)
+- In the index file of the project there is `app.use("graphql")` (depending on whether or not you want to use gql)

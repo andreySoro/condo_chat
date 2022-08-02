@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const axios = require("../../config/axiosConfig.js");
 
-router.use("/", async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     const result = await axios.post(
       "/token?key=" + process.env.FIREBASE_API_KEY,
