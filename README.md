@@ -1,13 +1,13 @@
-<a href="https://www.wewearmanyhats.com" target="_blank"><img style="with: 75px; height: 75px" alt="Company Logo" src="https://wewearmanyhats.com/app/themes/p_tech/resources/assets/images/logo.svg">
+<a href="https://www.wewearmanyhats.com" target="_blank"><img style="with: 75px; height: 75px" alt="Company Logo" src="https://wewearmanyhats.com/app/themes/p_tech/resources/assets/images/logo.svg"></a>
 
 # FIREBASE BACKEND TEMPLATE
 
 ### Setup instructions
 
 - generate firebase project
-- turn on [authentication](https://console.firebase.google.com/project/\_/authentication/providers)
-- create [web project](https://console.firebase.google.com/project/\_/overview)
-- go to [service accounts](https://console.firebase.google.com/project/\_/settings/serviceaccounts/adminsdk) and click Generate new private key. Put the file into the root of the project, re-name the file `serviceAccountKey.json`
+- turn on [authentication](https://console.firebase.google.com/project/_/authentication/providers)
+- create [web project](https://console.firebase.google.com/project/_/overview)
+- go to [service accounts](https://console.firebase.google.com/project/_/settings/serviceaccounts/adminsdk) and click Generate new private key. Put the file into the root of the project, re-name the file `serviceAccountKey.json`
 - create .env file in the root directory, add folowing variables, which can be found in firebase config file after creating web project.
 
 ```
