@@ -1,4 +1,4 @@
-<a href="https://www.wewearmanyhats.com" target="_blank"><img style="with: 75px; height: 75px" alt="Company Logo" src="./logo.png">
+<a href="https://www.wewearmanyhats.com" target="_blank"><img style="with: 75px; height: 75px" alt="Company Logo" src="./assets/logo.png">
 </a>
 
 # FIREBASE BACKEND TEMPLATE
@@ -25,10 +25,10 @@ BASE_URL="https://identitytoolkit.googleapis.com/v1"
 
 ### What's used
 
-- NodeJs <a href="https://nodejs.org/en/" target="_blank"><img style="height: 20px" alt="nodejs" src="https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=nodedotjs&logoColor=white" ></a>
-- Firebase (admin sdk and google rest API) <a href="https://firebase.google.com/" target="_blank"><img style="height: 20px" alt="firebase" src="https://img.shields.io/badge/firebase-ffca28?style=for-the-badge&logo=firebase&logoColor=black" ></a>
-- GraphQL (optional, could be removed from the project with no effect on firebase auth) <a href="https://graphql.org/" target="_blank"><img style="height: 20px" alt="graphql" src="https://img.shields.io/badge/GraphQl-E10098?style=for-the-badge&logo=graphql&logoColor=white"></a>
-- Axios <a href="https://axios-http.com/" target="_blank"><img style="height: 25px; width: 25px" alt="axios" src="https://avatars.githubusercontent.com/u/32372333?s=160&v=4"></a>
+- NodeJs <a href="https://nodejs.org/en/" target="_blank"><img style="height: 20px" alt="nodejs" src="./assets/node.png" ></a>
+- Firebase (admin sdk and google rest API) <a href="https://firebase.google.com/" target="_blank"><img style="height: 20px" alt="firebase" src="./assets/firebase.png" ></a>
+- GraphQL (optional, could be removed from the project with no effect on firebase auth) <a href="https://graphql.org/" target="_blank"><img style="height: 20px" alt="graphql" src="./assets/graphql.png"></a>
+- Axios <a href="https://axios-http.com/" target="_blank"><img style="height: 25px; width: 25px" alt="axios" src="./assets/axios.png"></a>
 
 ### Functionality
 
