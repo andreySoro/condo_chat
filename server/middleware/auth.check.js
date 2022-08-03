@@ -9,7 +9,7 @@ const requireAuth = (req, res, next) => {
   if (token) {
     decodedToken = jwt.decode(token);
   }
-  if (!decodedToken) {
+  if (!decodedToken || !decodedToken.exp) {
     res.status(401).json({ message: "Unauthorized" });
   }
   if (new Date(decodedToken.exp * 1000).getTime() > Date.now()) {
