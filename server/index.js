@@ -14,6 +14,7 @@ const signUp = require("./routes/auth/signUp");
 const signIn = require("./routes/auth/signIn");
 const forgotPassword = require("./routes/auth/forgotPassword");
 const refreshToken = require("./routes/auth/refreshToken");
+const contest = require("./routes/contest/index");
 
 //FIREBASE ADMIN SDK INIT
 const admin = require("firebase-admin");
@@ -36,16 +37,19 @@ app.get("/testAuth", requireAuth, (req, res) => {
   res.status(200).send("You are authorized");
 });
 
+//Contest
+app.use("/contest", contest);
+
 // CONNECT TO DB
 connectDB();
 
 //GRAPHQL ROUTE
-app.use(
-  "/graphql",
-  graphqlHTTP({
-    schema,
-    graphiql: process.env.NODE_ENV === "development",
-  })
-);
+// app.use(
+//   "/graphql",
+//   graphqlHTTP({
+//     schema,
+//     graphiql: process.env.NODE_ENV === "development",
+//   })
+// );
 
 app.listen(port, console.log(`Server running on port ${port}`));
