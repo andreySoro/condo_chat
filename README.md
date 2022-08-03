@@ -1,7 +1,7 @@
 <a href="https://www.wewearmanyhats.com" target="_blank"><img style="with: 75px; height: 75px" alt="Company Logo" src="./assets/logo.png">
 </a>
 
-# FIREBASE BACKEND TEMPLATE
+---
 
 ### Setup instructions
 
