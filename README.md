@@ -1,5 +1,4 @@
-<a href="https://www.wewearmanyhats.com" target="_blank">
-![Many Hats logo](https://wewearmanyhats.com/app/themes/p_tech/resources/assets/images/logo.svg){height=75 width=75}
+<a href="https://www.wewearmanyhats.com" target="_blank"><img style="with: 75px; height: 75px" alt="Company Logo" src="./logo.png">
 </a>
 
 # FIREBASE BACKEND TEMPLATE
