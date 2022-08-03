@@ -13,9 +13,26 @@ const createContest = async (req, res) => {
   if (!SingleContest) {
     return res.status(400).send("Contest not created");
   }
-  await SingleContest.save();
-  res.status(200).send(SingleContest);
-  return;
+  try {
+    await SingleContest.save();
+    res.status(200).send(SingleContest);
+    return;
+  } catch (error) {
+    if (error?.code === 11000) {
+      res.status(400).send({
+        error: {
+          message: `${error?.keyValue?.name} already exists`,
+        },
+      });
+    } else {
+      res.status(400).send({
+        error: {
+          message: `Error creating contest`,
+          status: error?.code,
+        },
+      });
+    }
+  }
 };
 
 module.exports = createContest;
