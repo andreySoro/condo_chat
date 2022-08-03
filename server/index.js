@@ -30,9 +30,6 @@ app.use(bodyParser.json());
 
 //AUTH RELATED ROUTES
 app.use("/auth", auth);
-app.get("/testAuth", requireAuth, (req, res) => {
-  res.status(200).send("You are authorized");
-});
 
 //Contest
 app.use("/contest", contest);
