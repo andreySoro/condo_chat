@@ -7,13 +7,10 @@ const connectDB = require("./config/db");
 const cors = require("cors");
 const { graphqlHTTP } = require("express-graphql");
 const helmet = require("helmet");
-// const { schema, resolvers } = require("./schema/schema.gql");
 const schema = require("./schema/schema");
-const requireAuth = require("./middleware/auth.check");
 
 // IMPORTED ROUTES
 const auth = require("./routes/auth/");
-const contest = require("./routes/contest");
 
 //FIREBASE ADMIN SDK INIT
 const admin = require("firebase-admin");
@@ -30,9 +27,6 @@ app.use(bodyParser.json());
 
 //AUTH RELATED ROUTES
 app.use("/auth", auth);
-
-//Contest
-app.use("/contest", contest);
 
 // CONNECT TO DB
 connectDB();
