@@ -6,15 +6,14 @@ const bodyParser = require("body-parser");
 const connectDB = require("./config/db");
 const cors = require("cors");
 const { graphqlHTTP } = require("express-graphql");
+const helmet = require("helmet");
+// const { schema, resolvers } = require("./schema/schema.gql");
 const schema = require("./schema/schema");
 const requireAuth = require("./middleware/auth.check");
 
 // IMPORTED ROUTES
-const signUp = require("./routes/auth/signUp");
-const signIn = require("./routes/auth/signIn");
-const forgotPassword = require("./routes/auth/forgotPassword");
-const refreshToken = require("./routes/auth/refreshToken");
-const contest = require("./routes/contest/index");
+const auth = require("./routes/auth/");
+const contest = require("./routes/contest");
 
 //FIREBASE ADMIN SDK INIT
 const admin = require("firebase-admin");
@@ -25,14 +24,12 @@ admin.initializeApp({
 
 // BACKEND INITIALIZATION-
 const app = express();
+app.use(helmet());
 app.use(cors());
 app.use(bodyParser.json());
 
 //AUTH RELATED ROUTES
-app.use("/signIn", signIn);
-app.use("/signUp", signUp);
-app.use("/forgotPassword", forgotPassword);
-app.use("/refreshToken", refreshToken);
+app.use("/auth", auth);
 app.get("/testAuth", requireAuth, (req, res) => {
   res.status(200).send("You are authorized");
 });
@@ -44,12 +41,13 @@ app.use("/contest", contest);
 connectDB();
 
 //GRAPHQL ROUTE
-// app.use(
-//   "/graphql",
-//   graphqlHTTP({
-//     schema,
-//     graphiql: process.env.NODE_ENV === "development",
-//   })
-// );
+app.use(
+  "/graphql",
+  graphqlHTTP({
+    schema,
+    // rootValue: resolvers,
+    graphiql: process.env.NODE_ENV === "development",
+  })
+);
 
 app.listen(port, console.log(`Server running on port ${port}`));
