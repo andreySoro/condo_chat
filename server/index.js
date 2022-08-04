@@ -21,7 +21,13 @@ admin.initializeApp({
 
 // BACKEND INITIALIZATION-
 const app = express();
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy:
+      //graphqli would not work otherwise
+      process.env.NODE_ENV === "development" ? false : true,
+  })
+);
 app.use(cors());
 app.use(bodyParser.json());
 
