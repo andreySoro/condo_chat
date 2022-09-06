@@ -1,7 +1,7 @@
 const express = require("express");
 require("dotenv").config();
 require("firebase/compat/auth");
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5050;
 const bodyParser = require("body-parser");
 const connectDB = require("./config/db");
 const cors = require("cors");
