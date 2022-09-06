@@ -10,6 +10,5 @@ router.post("/forgotPassword", forgotPasswordController);
 router.post("/refreshToken", requireAuth, refreshTokenController);
 router.post("/signIn", signInController);
 router.post("/signUp", signUpController);
-router.post("/test", signUpController);
 
 module.exports = router;
