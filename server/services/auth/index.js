@@ -19,12 +19,13 @@ const signInWithPasswordCall = async (req) => {
 
 const forgotPasswordCall = async (req) => {
   const { email } = req.body;
+  console.log("email", email);
   if (typeof email === "string") {
     return await axios.post(
       "/accounts:sendOobCode?key=" + process.env.FIREBASE_API_KEY,
       {
         requestType: "PASSWORD_RESET",
-        email: req.body.email,
+        email,
       }
     );
   }

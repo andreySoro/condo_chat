@@ -5,8 +5,8 @@ const forgotPassword = async (req, res) => {
     await forgotPasswordCall(req);
     return res.status(200).send({ message: "Email sent successfully" });
   } catch (error) {
-    console.log("ERROR FORGOT PASSWORD", error);
-    return res.status(400).send(error.message);
+    console.log("ERROR FORGOT PASSWORD", error.response.data.error.message);
+    return res.status(400).send(error.response.data.error.message);
   }
 };
 
