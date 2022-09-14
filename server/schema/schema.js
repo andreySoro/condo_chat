@@ -13,6 +13,7 @@ const {
   countryQueries,
   cityQueries,
   addressQueries,
+  blogPostQueries,
 } = require("./queries");
 const {
   userMutations,
@@ -20,6 +21,7 @@ const {
   provinceMutations,
   cityMutations,
   addressMutations,
+  blogPostMutations,
 } = require("./mutations");
 
 const RootQuery = new GraphQLObjectType({
@@ -30,6 +32,7 @@ const RootQuery = new GraphQLObjectType({
     ...countryQueries,
     ...cityQueries,
     ...addressQueries,
+    ...blogPostQueries,
   },
 });
 const RootMutation = new GraphQLObjectType({
@@ -40,6 +43,7 @@ const RootMutation = new GraphQLObjectType({
     ...provinceMutations,
     ...cityMutations,
     ...addressMutations,
+    ...blogPostMutations,
   },
 });
 

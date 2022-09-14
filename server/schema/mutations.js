@@ -12,12 +12,14 @@ const {
   ProvinceType,
   CityType,
   AddressType,
+  BlogPostType,
 } = require("./typeDefenition");
 const User = require("../models/User");
 const Country = require("../models/Country");
 const Province = require("../models/Provinces");
 const City = require("../models/City");
 const Address = require("../models/Address");
+const BlogPost = require("../models/BlogPost");
 
 //USER MUTATIONS
 const userMutations = {
@@ -102,6 +104,10 @@ const cityMutations = {
       name: { type: GraphQLString },
     },
     async resolve(parents, args) {
+      const isCityExists = await City.findOne({ name: args.name });
+      if (isCityExists) {
+        return isCityExists;
+      }
       const lastIdNumber = await City.find().then(
         (res) => res[res?.length - 1].id
       );
@@ -125,6 +131,12 @@ const addressMutations = {
       city: { type: GraphQLID },
     },
     async resolve(parents, args) {
+      const doesAddressExist = await Address.findOne({
+        name: args.addressName,
+      });
+      if (doesAddressExist) {
+        return doesAddressExist;
+      }
       const lastIdNumber = await Address.find().then(
         (res) => res[res?.length - 1]?.id || 0
       );
@@ -138,10 +150,37 @@ const addressMutations = {
   },
 };
 
+//BLOG POST MUTATIONS
+const blogPostMutations = {
+  addBlogPost: {
+    type: BlogPostType,
+    args: {
+      title: { type: GraphQLString },
+      message: { type: GraphQLString },
+      address: { type: GraphQLID },
+    },
+    async resolve(parents, args) {
+      const lastIdNumber = await BlogPost.find().then(
+        (res) => res[res?.length - 1]?.id || 0
+      );
+      return new BlogPost({
+        id: lastIdNumber + 1,
+        title: args.title,
+        message: args.message,
+        comments: null,
+        upVote: 0,
+        downVote: 0,
+        address: args.address,
+      }).save();
+    },
+  },
+};
+
 module.exports = {
   userMutations,
   countryMutations,
   provinceMutations,
   cityMutations,
   addressMutations,
+  blogPostMutations,
 };

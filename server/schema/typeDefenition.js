@@ -88,6 +88,33 @@ const UserType = new GraphQLObjectType({
   }),
 });
 
+const BlogPostComments = new GraphQLObjectType({
+  name: "BlogPostComments",
+  fields: {
+    id: { type: GraphQLID },
+    message: { type: GraphQLString },
+    author: { type: GraphQLID },
+  },
+});
+
+const BlogPostType = new GraphQLObjectType({
+  name: "BlogPost",
+  fields: () => ({
+    id: { type: GraphQLID },
+    title: { type: GraphQLString },
+    message: { type: GraphQLString },
+    comments: { type: new GraphQLList(BlogPostComments) },
+    upVote: { type: GraphQLInt },
+    downVote: { type: GraphQLInt },
+    address: {
+      type: AddressType,
+      resolve(parents, args) {
+        return Address.findOne({ id: parents.address });
+      },
+    },
+  }),
+});
+
 module.exports = {
   AreaType,
   UserType,
@@ -95,4 +122,5 @@ module.exports = {
   CountryType,
   CityType,
   AddressType,
+  BlogPostType,
 };

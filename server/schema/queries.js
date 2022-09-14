@@ -12,12 +12,14 @@ const {
   CountryType,
   CityType,
   AddressType,
+  BlogPostType,
 } = require("./typeDefenition");
 const User = require("../models/User");
 const Provinces = require("../models/Provinces");
 const Country = require("../models/Country");
 const City = require("../models/City");
 const Address = require("../models/Address");
+const BlogPost = require("../models/BlogPost");
 
 //USER QUERIES
 const userQueries = {
@@ -165,10 +167,22 @@ const addressQueries = {
   },
 };
 
+//BLOGPOST QUERIES
+const blogPostQueries = {
+  getBlogPostsByAddress: {
+    type: new GraphQLList(BlogPostType),
+    args: { addressId: { type: GraphQLID } },
+    resolve(parents, args) {
+      return BlogPost.find({ address: args.addressId });
+    },
+  },
+};
+
 module.exports = {
   userQueries,
   provinceQueries,
   countryQueries,
   cityQueries,
   addressQueries,
+  blogPostQueries,
 };
