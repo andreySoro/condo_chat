@@ -7,13 +7,15 @@ const UserSchema = new mongoose.Schema({
   },
   name: { type: String },
   email: { type: String, unique: true },
-  area: {
-    addressOne: { type: String },
-    addressTwo: { type: String },
-    city: { type: String },
-    province: { type: String },
-    postalCode: { type: String },
-  },
+  unitNumber: { type: String },
+  address: { type: Number },
+  // area: {
+  //   addressOne: { type: String },
+  //   addressTwo: { type: String },
+  //   city: { type: String },
+  //   province: { type: String },
+  //   postalCode: { type: String },
+  // },
 });
 
 module.exports = mongoose.model("User", UserSchema);
