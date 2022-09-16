@@ -13,6 +13,7 @@ const {
   CityType,
   AddressType,
   BlogPostType,
+  CommentType,
 } = require("./typeDefenition");
 const User = require("../models/User");
 const Country = require("../models/Country");
@@ -20,6 +21,7 @@ const Province = require("../models/Provinces");
 const City = require("../models/City");
 const Address = require("../models/Address");
 const BlogPost = require("../models/BlogPost");
+const Comment = require("../models/Comment");
 
 //USER MUTATIONS
 const userMutations = {
@@ -116,36 +118,58 @@ const cityMutations = {
         name: args.name,
         province: args.provinceId,
       });
+
       return await city.save();
     },
   },
 };
 
+// const updateUserInfo = async (args) => {
+//   console.log("updating user", args);
+//   await User.findOneAndUpdate(
+//     { id: args.id },
+//     {
+//       $set: {
+//         name: args.userName,
+//         email: args.email,
+//         address: args.address,
+//         unitNumber: args.unitNumber,
+//       },
+//     },
+//     { new: true }
+//   );
+// };
 //ADDRESS MUTATIONS
 const addressMutations = {
   createAddress: {
     type: AddressType,
     args: {
+      id: { type: GraphQLID },
+      userName: { type: GraphQLString },
+      unitNumber: { type: GraphQLString },
       addressName: { type: GraphQLString },
       postalCode: { type: GraphQLString },
       city: { type: GraphQLID },
     },
     async resolve(parents, args) {
       const doesAddressExist = await Address.findOne({
-        name: args.addressName,
+        addressName: { $regex: new RegExp(args.addressName, "i") }, //regex will disregard case sensetivity
       });
       if (doesAddressExist) {
+        // await updateUserInfo({ ...args, address: doesAddressExist.id });
         return doesAddressExist;
       }
       const lastIdNumber = await Address.find().then(
         (res) => res[res?.length - 1]?.id || 0
       );
-      return new Address({
+      const newAddress = await new Address({
         id: lastIdNumber + 1,
         addressName: args.addressName,
         postalCode: args.postalCode,
         city: args.city,
       }).save();
+      // await updateUserInfo({ ...args, address: lastIdNumber + 1 });
+      return newAddress;
     },
   },
 };
@@ -167,11 +191,133 @@ const blogPostMutations = {
         id: lastIdNumber + 1,
         title: args.title,
         message: args.message,
-        comments: null,
-        upVote: 0,
-        downVote: 0,
+        comments: [],
+        upVote: [],
+        downVote: [],
         address: args.address,
       }).save();
+    },
+  },
+  upVotePost: {
+    type: BlogPostType,
+    args: { postId: { type: GraphQLID }, userId: { type: GraphQLID } },
+    async resolve(parents, args) {
+      const isUpvoted = await BlogPost.findOne({
+        id: args.postId,
+      }).then((res) => res.upVote.includes(args.userId));
+
+      if (isUpvoted) {
+        return await BlogPost.findOneAndUpdate(
+          { id: args.postId },
+          {
+            $pull: {
+              upVote: args.userId,
+            },
+          },
+          { new: true }
+        );
+      } else {
+        return await BlogPost.findOneAndUpdate(
+          { id: args.postId },
+          {
+            $pull: {
+              downVote: args.userId,
+            },
+            $push: {
+              upVote: args.userId,
+            },
+          },
+          { new: true }
+        );
+      }
+    },
+  },
+  downVotePost: {
+    type: BlogPostType,
+    args: { postId: { type: GraphQLID }, userId: { type: GraphQLID } },
+    async resolve(parents, args) {
+      //IF USER HIT DOWNVOTE, CHECKING IF HE HAD UPVOTED BEFORE IF SO REMOVING IT
+      const isDownVoted = await BlogPost.findOne({
+        id: args.postId,
+      }).then((res) => res.downVote.includes(args.userId));
+
+      if (isDownVoted) {
+        return await BlogPost.findOneAndUpdate(
+          { id: args.postId },
+          {
+            $pull: {
+              downVote: args.userId,
+            },
+          },
+          { new: true }
+        );
+      } else {
+        return await BlogPost.findOneAndUpdate(
+          { id: args.postId },
+          {
+            $pull: {
+              upVote: args.userId,
+            },
+            $push: {
+              downVote: args.userId,
+            },
+          },
+          { new: true }
+        );
+      }
+    },
+  },
+  addComment: {
+    type: CommentType,
+    args: {
+      postId: { type: GraphQLID },
+      userId: { type: GraphQLID },
+      message: { type: GraphQLString },
+    },
+    async resolve(parents, args) {
+      const lastIdNumber = await Comment.find().then(
+        (res) => res[res?.length - 1]?.id || 0
+      );
+
+      const newComment = await new Comment({
+        id: lastIdNumber + 1,
+        message: args.message,
+        author: args.userId,
+        postId: args.postId,
+        upVote: [],
+        downVote: [],
+      }).save();
+
+      if (newComment) {
+        await BlogPost.findOneAndUpdate(
+          { id: args.postId },
+          {
+            $push: {
+              comments: newComment.id,
+            },
+          },
+          { new: true }
+        );
+      }
+      return newComment;
+    },
+  },
+  deleteComment: {
+    type: CommentType,
+    args: { commentId: { type: GraphQLID } },
+    async resolve(parents, args) {
+      const comment = await Comment.findOneAndDelete({ id: args.commentId });
+      if (comment) {
+        await BlogPost.findOneAndUpdate(
+          { id: comment.postId },
+          {
+            $pull: {
+              comments: comment.id,
+            },
+          }
+        );
+      }
+      return comment;
     },
   },
 };

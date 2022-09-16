@@ -5,8 +5,8 @@ const BlogPostSchema = new mongoose.Schema({
   title: { type: String, required: true },
   message: { type: String, required: true },
   comments: { type: Array },
-  upVote: { type: Number },
-  downVote: { type: Number },
+  upVote: { type: Array },
+  downVote: { type: Array },
   address: { type: Number, required: true },
 });
 

@@ -39,6 +39,77 @@ app.use("/auth", auth);
 // CONNECT TO DB
 connectDB();
 
+app.use("/search", async (req, res) => {
+  const { query, provinceId, address, cityId } = req.query;
+  console.log("UQERY =", query, provinceId);
+  if (query && provinceId) {
+    const citiesReturned = await City.aggregate([
+      {
+        $search: {
+          index: "searchCity",
+          autocomplete: {
+            query: query,
+            path: "name",
+            tokenOrder: "sequential",
+          },
+        },
+      },
+      {
+        $limit: 10,
+      },
+      {
+        $match: {
+          province: Number(provinceId),
+        },
+      },
+      // {
+      //   $project: {
+      //     _id: 0,
+      //     name: 1,
+      //   },
+      // },
+    ]);
+
+    return res.status(200).send(citiesReturned);
+  } else {
+    const addressReturned = await Address.aggregate([
+      {
+        $search: {
+          index: "searchAddress",
+          autocomplete: {
+            query: address,
+            path: "addressName",
+            tokenOrder: "sequential",
+          },
+        },
+      },
+      {
+        $limit: 10,
+      },
+      {
+        $match: {
+          city: Number(cityId),
+        },
+      },
+      // {
+      //   $project: {
+      //     _id: 0,
+      //     name: 1,
+      //   },
+      // },
+    ]);
+    return res.status(200).send(addressReturned);
+  }
+
+  // City.find({ name: { $regex: query, $options: "i=" } }, (err, cities) => {
+  //   if (err) {
+  //     res.status(500).send(err);
+  //   } else {
+  //     res.status(200).send(cities);
+  //   }
+  // }).limit(10);
+});
+
 //GRAPHQL ROUTE
 app.use(
   "/graphql",

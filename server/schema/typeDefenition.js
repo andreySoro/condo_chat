@@ -10,17 +10,9 @@ const Country = require("../models/Country");
 const Province = require("../models/Provinces");
 const City = require("../models/City");
 const Address = require("../models/Address");
-
-const AreaType = new GraphQLObjectType({
-  name: "Area",
-  fields: () => ({
-    addressOne: { type: GraphQLString },
-    addressTwo: { type: GraphQLString },
-    city: { type: GraphQLString },
-    province: { type: GraphQLString },
-    postalCode: { type: GraphQLString },
-  }),
-});
+const User = require("../models/User");
+const BlogPost = require("../models/BlogPost");
+const Comment = require("../models/Comment");
 
 const CountryType = new GraphQLObjectType({
   name: "Country",
@@ -88,39 +80,69 @@ const UserType = new GraphQLObjectType({
   }),
 });
 
-const BlogPostComments = new GraphQLObjectType({
-  name: "BlogPostComments",
-  fields: {
-    id: { type: GraphQLID },
-    message: { type: GraphQLString },
-    author: { type: GraphQLID },
-  },
-});
-
 const BlogPostType = new GraphQLObjectType({
   name: "BlogPost",
   fields: () => ({
     id: { type: GraphQLID },
     title: { type: GraphQLString },
     message: { type: GraphQLString },
-    comments: { type: new GraphQLList(BlogPostComments) },
-    upVote: { type: GraphQLInt },
-    downVote: { type: GraphQLInt },
+    comments: {
+      type: new GraphQLList(CommentType),
+      resolve(parents, args) {
+        return Comment.find({ postId: parents.id });
+      },
+    },
+    upVote: { type: new GraphQLList(GraphQLString) },
+    downVote: { type: new GraphQLList(GraphQLString) },
     address: {
       type: AddressType,
       resolve(parents, args) {
         return Address.findOne({ id: parents.address });
       },
     },
+    commentsCount: {
+      type: GraphQLInt,
+      resolve(parents, args) {
+        return Comment.find({ postId: parents.id }).count();
+      },
+    },
+    votesCount: {
+      type: GraphQLInt,
+      resolve(parents, args) {
+        return parents.upVote.length - parents.downVote.length;
+      },
+    },
   }),
 });
 
+const CommentType = new GraphQLObjectType({
+  name: "Comment",
+  fields: {
+    id: { type: GraphQLID },
+    message: { type: GraphQLString },
+    author: {
+      type: UserType,
+      resolve(parents, args) {
+        return User.findOne({ id: parents.author });
+      },
+    },
+    postId: {
+      type: BlogPostType,
+      resolve(parents, args) {
+        return BlogPost.findOne({ id: parents.postId });
+      },
+    },
+    upVote: { type: new GraphQLList(GraphQLString) },
+    downVote: { type: new GraphQLList(GraphQLString) },
+  },
+});
+
 module.exports = {
-  AreaType,
   UserType,
   ProvinceType,
   CountryType,
   CityType,
   AddressType,
   BlogPostType,
+  CommentType,
 };

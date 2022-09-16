@@ -171,9 +171,34 @@ const addressQueries = {
 const blogPostQueries = {
   getBlogPostsByAddress: {
     type: new GraphQLList(BlogPostType),
-    args: { addressId: { type: GraphQLID } },
-    resolve(parents, args) {
-      return BlogPost.find({ address: args.addressId });
+    args: { addressId: { type: GraphQLID }, userId: { type: GraphQLID } },
+    async resolve(parents, args) {
+      if (!args.userId) {
+        return (await BlogPost.find({ address: args.addressId })).map((res) => {
+          return {
+            ...res._doc,
+            upVote: res._doc.upVote.slice(5, 10),
+            downVote: res._doc.downVote.slice(5, 10),
+          };
+        });
+        const start = Date.now();
+        const postsArray = await BlogPost.find({
+          address: args.addressId,
+        }).then((blogPost) => {
+          return blogPost.map((individualPosts) => {
+            return {
+              ...individualPosts._doc,
+              upVote: individualPosts.upVote.filter(
+                (item) => item == args.userId
+              ),
+              downVote: individualPosts.downVote.filter(
+                (item) => item == args.userId
+              ),
+            };
+          });
+        });
+        return postsArray;
+      }
     },
   },
 };
@@ -186,3 +211,29 @@ module.exports = {
   addressQueries,
   blogPostQueries,
 };
+
+// const start = Date.now();
+// const transformedPosts = blogPost.map((individualPosts) => {
+//   const upVoteObj = { ...individualPosts._doc.upVote };
+//   const downVoteObj = { ...individualPosts._doc.downVote };
+//   let res1 = [];
+//   let res2 = [];
+//   for (const key in upVoteObj) {
+//     if (upVoteObj[key] == args.userId) {
+//       res1.push(args.userId);
+//     }
+//   }
+//   for (const key in downVoteObj) {
+//     if (downVoteObj[key] == args.userId) {
+//       res2.push(args.userId);
+//     }
+//   }
+//   return {
+//     ...individualPosts._doc,
+//     upVote: res1,
+//     downVote: res2,
+//   };
+// });
+// const end = Date.now();
+// console.log(`Execution time: ${end - start} ms`);
+// return transformedPosts;
