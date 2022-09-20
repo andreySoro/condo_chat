@@ -84,6 +84,12 @@ const BlogPostType = new GraphQLObjectType({
   name: "BlogPost",
   fields: () => ({
     id: { type: GraphQLID },
+    author: {
+      type: UserType,
+      resolve(parents, args) {
+        return User.findOne({ id: parents.author });
+      },
+    },
     title: { type: GraphQLString },
     message: { type: GraphQLString },
     comments: {
@@ -112,6 +118,8 @@ const BlogPostType = new GraphQLObjectType({
         return parents.upVote.length - parents.downVote.length;
       },
     },
+    createdAt: { type: GraphQLString },
+    updatedAt: { type: GraphQLString },
   }),
 });
 
@@ -132,8 +140,12 @@ const CommentType = new GraphQLObjectType({
         return BlogPost.findOne({ id: parents.postId });
       },
     },
+    replyId: { type: GraphQLID },
+    createdAt: { type: GraphQLString },
+    updatedAt: { type: GraphQLString },
     upVote: { type: new GraphQLList(GraphQLString) },
     downVote: { type: new GraphQLList(GraphQLString) },
+    votesCount: { type: GraphQLInt },
   },
 });
 

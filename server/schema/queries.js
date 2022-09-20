@@ -32,7 +32,7 @@ const userQueries = {
   getUser: {
     type: UserType,
     args: { id: { type: GraphQLID } },
-    resolve(parents, args) {
+    resolve(parents, args, context) {
       return User.findOne({ id: args.id });
     },
   },
@@ -177,8 +177,8 @@ const blogPostQueries = {
         return (await BlogPost.find({ address: args.addressId })).map((res) => {
           return {
             ...res._doc,
-            upVote: res._doc.upVote.slice(5, 10),
-            downVote: res._doc.downVote.slice(5, 10),
+            upVote: res._doc.upVote.slice(0, 5),
+            downVote: res._doc.downVote.slice(0, 5),
           };
         });
         const start = Date.now();
@@ -211,29 +211,3 @@ module.exports = {
   addressQueries,
   blogPostQueries,
 };
-
-// const start = Date.now();
-// const transformedPosts = blogPost.map((individualPosts) => {
-//   const upVoteObj = { ...individualPosts._doc.upVote };
-//   const downVoteObj = { ...individualPosts._doc.downVote };
-//   let res1 = [];
-//   let res2 = [];
-//   for (const key in upVoteObj) {
-//     if (upVoteObj[key] == args.userId) {
-//       res1.push(args.userId);
-//     }
-//   }
-//   for (const key in downVoteObj) {
-//     if (downVoteObj[key] == args.userId) {
-//       res2.push(args.userId);
-//     }
-//   }
-//   return {
-//     ...individualPosts._doc,
-//     upVote: res1,
-//     downVote: res2,
-//   };
-// });
-// const end = Date.now();
-// console.log(`Execution time: ${end - start} ms`);
-// return transformedPosts;

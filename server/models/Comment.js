@@ -4,9 +4,12 @@ const CommentSchema = new mongoose.Schema({
   id: { type: Number, unique: true },
   message: { type: String, required: true },
   author: { type: String, required: true },
-  postId: { type: Number, required: true },
-  upVote: { type: Array },
-  downVote: { type: Array },
+  postId: { type: Number, default: null },
+  replyId: { type: Number, default: null },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
+  upVote: { type: Array, default: [] },
+  downVote: { type: Array, default: [] },
 });
 
 module.exports = mongoose.model("comments", CommentSchema);

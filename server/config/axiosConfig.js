@@ -10,7 +10,6 @@ const axiosConfig = axios.create({
 
 axiosConfig.interceptors.request.use(async (request) => {
   const requestConfig = { ...request };
-
   return requestConfig;
 });
 
