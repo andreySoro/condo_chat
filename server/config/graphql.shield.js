@@ -6,9 +6,29 @@ const schema = require("../schema/schema");
 const permissions = shield({
   RootQueryType: {
     getUser: graphQlAuth,
+    getCountries: graphQlAuth,
+    getCountryByName: graphQlAuth,
+    getProvinces: graphQlAuth,
+    getProvincesCountrySpecific: graphQlAuth,
+    getCities: graphQlAuth,
+    getCityByProvinceId: graphQlAuth,
+    autocompleteCity: graphQlAuth,
+    getAddresses: graphQlAuth,
+    autocompleteAddress: graphQlAuth,
+    getBlogPostsByAddress: graphQlAuth,
   },
   RootMutationType: {
     updateUserInfo: graphQlAuth,
+    addCountry: graphQlAuth,
+    getAllCountries: graphQlAuth,
+    addProvince: graphQlAuth,
+    addCity: graphQlAuth,
+    createAddress: graphQlAuth,
+    addBlogPost: graphQlAuth,
+    upVotePost: graphQlAuth,
+    downVotePost: graphQlAuth,
+    addComment: graphQlAuth,
+    deleteComment: graphQlAuth,
   },
 });
 const schemaWithPermissions = applyMiddleware(schema, permissions);
