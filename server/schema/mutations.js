@@ -145,8 +145,6 @@ const addressMutations = {
     type: AddressType,
     args: {
       id: { type: GraphQLID },
-      userName: { type: GraphQLString },
-      unitNumber: { type: GraphQLString },
       addressName: { type: GraphQLString },
       postalCode: { type: GraphQLString },
       city: { type: GraphQLID },
@@ -156,7 +154,6 @@ const addressMutations = {
         addressName: { $regex: new RegExp(args.addressName, "i") }, //regex will disregard case sensetivity
       });
       if (doesAddressExist) {
-        // await updateUserInfo({ ...args, address: doesAddressExist.id });
         return doesAddressExist;
       }
       const lastIdNumber = await Address.find().then(
@@ -168,7 +165,6 @@ const addressMutations = {
         postalCode: args.postalCode,
         city: args.city,
       }).save();
-      // await updateUserInfo({ ...args, address: lastIdNumber + 1 });
       return newAddress;
     },
   },
@@ -182,6 +178,7 @@ const blogPostMutations = {
       title: { type: GraphQLString },
       message: { type: GraphQLString },
       address: { type: GraphQLID },
+      author: { type: GraphQLString },
     },
     async resolve(parents, args) {
       const lastIdNumber = await BlogPost.find().then(
@@ -189,11 +186,9 @@ const blogPostMutations = {
       );
       return new BlogPost({
         id: lastIdNumber + 1,
+        author: args.author,
         title: args.title,
         message: args.message,
-        comments: [],
-        upVote: [],
-        downVote: [],
         address: args.address,
       }).save();
     },
@@ -205,6 +200,9 @@ const blogPostMutations = {
       const isUpvoted = await BlogPost.findOne({
         id: args.postId,
       }).then((res) => res.upVote.includes(args.userId));
+      // const isDownVoted = await BlogPost.findOne({
+      //   id: args.postId,
+      // }).then((res) => res.downVote.includes(args.userId));
 
       if (isUpvoted) {
         return await BlogPost.findOneAndUpdate(
@@ -213,6 +211,9 @@ const blogPostMutations = {
             $pull: {
               upVote: args.userId,
             },
+            // $inc: {
+            //   votesCount: -1,
+            // },
           },
           { new: true }
         );
@@ -226,6 +227,9 @@ const blogPostMutations = {
             $push: {
               upVote: args.userId,
             },
+            // $inc: {
+            //   votesCount: isDownVoted ? +2 : +1,
+            // },
           },
           { new: true }
         );
@@ -240,6 +244,9 @@ const blogPostMutations = {
       const isDownVoted = await BlogPost.findOne({
         id: args.postId,
       }).then((res) => res.downVote.includes(args.userId));
+      // const isUpvoted = await BlogPost.findOne({
+      //   id: args.postId,
+      // }).then((res) => res.upVote.includes(args.userId));
 
       if (isDownVoted) {
         return await BlogPost.findOneAndUpdate(
@@ -248,6 +255,9 @@ const blogPostMutations = {
             $pull: {
               downVote: args.userId,
             },
+            // $inc: {
+            //   votesCount: +1,
+            // },
           },
           { new: true }
         );
@@ -261,6 +271,9 @@ const blogPostMutations = {
             $push: {
               downVote: args.userId,
             },
+            // $inc: {
+            //   votesCount: isUpvoted ? -2 : -1,
+            // },
           },
           { new: true }
         );
@@ -273,6 +286,7 @@ const blogPostMutations = {
       postId: { type: GraphQLID },
       userId: { type: GraphQLID },
       message: { type: GraphQLString },
+      replyId: { type: GraphQLID },
     },
     async resolve(parents, args) {
       const lastIdNumber = await Comment.find().then(
@@ -284,8 +298,7 @@ const blogPostMutations = {
         message: args.message,
         author: args.userId,
         postId: args.postId,
-        upVote: [],
-        downVote: [],
+        replyId: args.replyId,
       }).save();
 
       if (newComment) {

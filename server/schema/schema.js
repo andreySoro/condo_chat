@@ -23,6 +23,7 @@ const {
   addressMutations,
   blogPostMutations,
 } = require("./mutations");
+const { shield } = require("graphql-shield");
 
 const RootQuery = new GraphQLObjectType({
   name: "RootQueryType",
@@ -36,7 +37,7 @@ const RootQuery = new GraphQLObjectType({
   },
 });
 const RootMutation = new GraphQLObjectType({
-  name: "RootMutatuionType",
+  name: "RootMutationType",
   fields: {
     ...userMutations,
     ...countryMutations,
