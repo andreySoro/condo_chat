@@ -145,7 +145,12 @@ const CommentType = new GraphQLObjectType({
     updatedAt: { type: GraphQLString },
     upVote: { type: new GraphQLList(GraphQLString) },
     downVote: { type: new GraphQLList(GraphQLString) },
-    votesCount: { type: GraphQLInt },
+    votesCount: {
+      type: GraphQLInt,
+      resolve(parents, args) {
+        return parents.upVote.length - parents.downVote.length;
+      },
+    },
   },
 });
 

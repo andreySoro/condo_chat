@@ -22,6 +22,7 @@ const City = require("../models/City");
 const Address = require("../models/Address");
 const BlogPost = require("../models/BlogPost");
 const Comment = require("../models/Comment");
+const { extractUserIdFromToken } = require("../utils/extractUserIdFromToken");
 
 //USER MUTATIONS
 const userMutations = {
@@ -284,19 +285,21 @@ const blogPostMutations = {
     type: CommentType,
     args: {
       postId: { type: GraphQLID },
-      userId: { type: GraphQLID },
       message: { type: GraphQLString },
       replyId: { type: GraphQLID },
     },
-    async resolve(parents, args) {
+    async resolve(parents, args, ctx) {
+      const userId =
+        extractUserIdFromToken(ctx?.headers?.authorization) || null;
       const lastIdNumber = await Comment.find().then(
         (res) => res[res?.length - 1]?.id || 0
       );
-
+      if (lastIdNumber + 1 == args.replyId)
+        throw new Error("Cant reply to self! Change or remove replyId");
       const newComment = await new Comment({
         id: lastIdNumber + 1,
         message: args.message,
-        author: args.userId,
+        author: userId,
         postId: args.postId,
         replyId: args.replyId,
       }).save();
