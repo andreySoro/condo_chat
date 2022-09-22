@@ -10,6 +10,7 @@ const CommentSchema = new mongoose.Schema({
   updatedAt: { type: Date, default: Date.now },
   upVote: { type: Array, default: [] },
   downVote: { type: Array, default: [] },
+  votesCount: { type: Number, default: 0 },
 });
 
 module.exports = mongoose.model("comments", CommentSchema);

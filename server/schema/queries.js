@@ -20,6 +20,7 @@ const Country = require("../models/Country");
 const City = require("../models/City");
 const Address = require("../models/Address");
 const BlogPost = require("../models/BlogPost");
+const { extractUserIdFromToken } = require("../utils/extractUserIdFromToken");
 
 //USER QUERIES
 const userQueries = {
@@ -171,33 +172,44 @@ const addressQueries = {
 const blogPostQueries = {
   getBlogPostsByAddress: {
     type: new GraphQLList(BlogPostType),
-    args: { addressId: { type: GraphQLID }, userId: { type: GraphQLID } },
-    async resolve(parents, args) {
-      if (!args.userId) {
-        return (await BlogPost.find({ address: args.addressId })).map((res) => {
-          return {
-            ...res._doc,
-            upVote: res._doc.upVote.slice(0, 5),
-            downVote: res._doc.downVote.slice(0, 5),
-          };
-        });
-        const start = Date.now();
+    args: { addressId: { type: GraphQLID } },
+    async resolve(parents, args, ctx) {
+      const userId =
+        extractUserIdFromToken(ctx?.headers?.authorization) || null;
+      if (userId) {
         const postsArray = await BlogPost.find({
           address: args.addressId,
-        }).then((blogPost) => {
-          return blogPost.map((individualPosts) => {
-            return {
-              ...individualPosts._doc,
-              upVote: individualPosts.upVote.filter(
-                (item) => item == args.userId
-              ),
-              downVote: individualPosts.downVote.filter(
-                (item) => item == args.userId
-              ),
-            };
+        })
+          // .limit(10)
+          .then((blogPost) => {
+            return blogPost.map((individualPosts) => {
+              return {
+                ...individualPosts._doc,
+                upVote: individualPosts.upVote.filter((item) => item == userId),
+                downVote: individualPosts.downVote.filter(
+                  (item) => item == userId
+                ),
+              };
+            });
           });
-        });
         return postsArray;
+      }
+    },
+  },
+  getBlogPostById: {
+    type: BlogPostType,
+    args: { id: { type: GraphQLID } },
+    async resolve(parents, args, ctx) {
+      const userId =
+        extractUserIdFromToken(ctx?.headers?.authorization) || null;
+      if (userId) {
+        return BlogPost.findOne({ id: args.id }).then((blogPost) => {
+          return {
+            ...blogPost._doc,
+            upVote: blogPost.upVote.filter((item) => item == userId),
+            downVote: blogPost.downVote.filter((item) => item == userId),
+          };
+        });
       }
     },
   },

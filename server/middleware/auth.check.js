@@ -40,14 +40,21 @@ const graphQlAuth = rule()(async (parents, args, ctx, info) => {
         .auth()
         .verifyIdToken(token)
         .then((res) => res)
-        .catch((error) => error.message);
+        .catch((error) => null);
+      if (!decodedToken) return false;
       const existingUser = await User.findOne({ id: decodedToken.uid });
 
-      if (decodedToken && existingUser) {
+      if (
+        decodedToken &&
+        existingUser &&
+        new Date(decodedToken.exp * 1000) > Date.now()
+      ) {
         return true;
       } else {
         return false;
       }
+    } else {
+      return false;
     }
   } else {
     return false;
