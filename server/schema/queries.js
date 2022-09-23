@@ -228,7 +228,7 @@ const commentQueries = {
       const userId =
         extractUserIdFromToken(ctx?.headers?.authorization) || null;
       if (userId) {
-        const commentsArray = await Comment.find({ blogPost: args.blogPostId })
+        const commentsArray = await Comment.find({ postId: args.blogPostId })
           // .limit(10)
           .then((comments) => {
             return comments.map((individualComments) => {
