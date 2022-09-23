@@ -14,6 +14,7 @@ const {
   AddressType,
   BlogPostType,
   CommentType,
+  TagType,
 } = require("./typeDefenition");
 const User = require("../models/User");
 const Country = require("../models/Country");
@@ -22,7 +23,10 @@ const City = require("../models/City");
 const Address = require("../models/Address");
 const BlogPost = require("../models/BlogPost");
 const Comment = require("../models/Comment");
+const Tag = require("../models/Tags");
 const { extractUserIdFromToken } = require("../utils/extractUserIdFromToken");
+const { updateReputation } = require("../utils/updateReputation");
+const { votePost } = require("../utils/voting");
 
 //USER MUTATIONS
 const userMutations = {
@@ -178,107 +182,68 @@ const blogPostMutations = {
     args: {
       title: { type: GraphQLString },
       message: { type: GraphQLString },
-      address: { type: GraphQLID },
-      author: { type: GraphQLString },
+      addressId: { type: GraphQLID },
+      tags: { type: new GraphQLList(GraphQLID) },
     },
-    async resolve(parents, args) {
+    async resolve(parents, args, ctx) {
       const lastIdNumber = await BlogPost.find().then(
         (res) => res[res?.length - 1]?.id || 0
       );
+      const userId =
+        extractUserIdFromToken(ctx?.headers?.authorization) || null;
+
+      const isAddressExists = await Address.findOne({ id: args.addressId });
+      if (!isAddressExists) throw new Error("Address does not exist");
       return new BlogPost({
         id: lastIdNumber + 1,
-        author: args.author,
+        author: userId,
         title: args.title,
         message: args.message,
-        address: args.address,
+        address: args.addressId,
+        tags: args.tags,
       }).save();
     },
   },
   upVotePost: {
     type: BlogPostType,
-    args: { postId: { type: GraphQLID }, userId: { type: GraphQLID } },
-    async resolve(parents, args) {
-      const isUpvoted = await BlogPost.findOne({
+    args: { postId: { type: GraphQLID } },
+    async resolve(parents, args, ctx) {
+      const post = await BlogPost.findOne({
         id: args.postId,
-      }).then((res) => res.upVote.includes(args.userId));
-      // const isDownVoted = await BlogPost.findOne({
-      //   id: args.postId,
-      // }).then((res) => res.downVote.includes(args.userId));
+      });
+      if (!post) throw new Error("Post does not exist");
+      const userId =
+        extractUserIdFromToken(ctx?.headers?.authorization) || null;
+      if (!userId) throw new Error("Cannot find userId, bad token...┐(°_°)┌");
+      const isUpvoted = post.upVote.includes(userId);
+      const isDownVoted = post.downVote.includes(userId);
+      const reputationAmount = isUpvoted ? -1 : isDownVoted ? 2 : 1;
 
-      if (isUpvoted) {
-        return await BlogPost.findOneAndUpdate(
-          { id: args.postId },
-          {
-            $pull: {
-              upVote: args.userId,
-            },
-            // $inc: {
-            //   votesCount: -1,
-            // },
-          },
-          { new: true }
-        );
-      } else {
-        return await BlogPost.findOneAndUpdate(
-          { id: args.postId },
-          {
-            $pull: {
-              downVote: args.userId,
-            },
-            $push: {
-              upVote: args.userId,
-            },
-            // $inc: {
-            //   votesCount: isDownVoted ? +2 : +1,
-            // },
-          },
-          { new: true }
-        );
-      }
+      await votePost(post, isUpvoted, isDownVoted, userId, "upvote"); // post voting
+      if (post.author !== userId)
+        updateReputation(reputationAmount, post.author);
+      return post;
     },
   },
   downVotePost: {
     type: BlogPostType,
-    args: { postId: { type: GraphQLID }, userId: { type: GraphQLID } },
-    async resolve(parents, args) {
-      //IF USER HIT DOWNVOTE, CHECKING IF HE HAD UPVOTED BEFORE IF SO REMOVING IT
-      const isDownVoted = await BlogPost.findOne({
+    args: { postId: { type: GraphQLID } },
+    async resolve(parents, args, ctx) {
+      const post = await BlogPost.findOne({
         id: args.postId,
-      }).then((res) => res.downVote.includes(args.userId));
-      // const isUpvoted = await BlogPost.findOne({
-      //   id: args.postId,
-      // }).then((res) => res.upVote.includes(args.userId));
+      });
+      if (!post) throw new Error("Post does not exist");
+      const userId =
+        extractUserIdFromToken(ctx?.headers?.authorization) || null;
+      if (!userId) throw new Error("Cannot find userId, bad token...┐(°_°)┌");
+      const isDownVoted = post.downVote.includes(userId);
+      const isUpvoted = post.upVote.includes(userId);
+      const reputationAmount = isDownVoted ? 1 : isUpvoted ? -2 : -1;
 
-      if (isDownVoted) {
-        return await BlogPost.findOneAndUpdate(
-          { id: args.postId },
-          {
-            $pull: {
-              downVote: args.userId,
-            },
-            // $inc: {
-            //   votesCount: +1,
-            // },
-          },
-          { new: true }
-        );
-      } else {
-        return await BlogPost.findOneAndUpdate(
-          { id: args.postId },
-          {
-            $pull: {
-              upVote: args.userId,
-            },
-            $push: {
-              downVote: args.userId,
-            },
-            // $inc: {
-            //   votesCount: isUpvoted ? -2 : -1,
-            // },
-          },
-          { new: true }
-        );
-      }
+      await votePost(post, isUpvoted, isDownVoted, userId, "downvote"); // post voting
+      if (post.author !== userId)
+        updateReputation(reputationAmount, post.author);
+      return post;
     },
   },
   addComment: {
@@ -338,6 +303,22 @@ const blogPostMutations = {
   },
 };
 
+const tagMutations = {
+  addTag: {
+    type: TagType,
+    args: { name: { type: GraphQLString } },
+    async resolve(parents, args) {
+      const lastIdNumber = await Tag.find().then(
+        (res) => res[res?.length - 1]?.id || 0
+      );
+      return new Tag({
+        id: Number(lastIdNumber) + 1,
+        name: args.name,
+      }).save();
+    },
+  },
+};
+
 module.exports = {
   userMutations,
   countryMutations,
@@ -345,4 +326,5 @@ module.exports = {
   cityMutations,
   addressMutations,
   blogPostMutations,
+  tagMutations,
 };

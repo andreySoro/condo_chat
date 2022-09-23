@@ -13,6 +13,7 @@ const Address = require("../models/Address");
 const User = require("../models/User");
 const BlogPost = require("../models/BlogPost");
 const Comment = require("../models/Comment");
+const Tag = require("../models/Tags");
 
 const CountryType = new GraphQLObjectType({
   name: "Country",
@@ -71,12 +72,21 @@ const UserType = new GraphQLObjectType({
     name: { type: GraphQLString },
     email: { type: GraphQLString },
     unitNumber: { type: GraphQLString },
+    reputation: { type: GraphQLInt },
     address: {
       type: AddressType,
       resolve(parents, args) {
         return Address.findOne({ id: parents.address });
       },
     },
+  }),
+});
+
+const TagType = new GraphQLObjectType({
+  name: "Tag",
+  fields: () => ({
+    id: { type: GraphQLID },
+    name: { type: GraphQLString },
   }),
 });
 
@@ -114,12 +124,21 @@ const BlogPostType = new GraphQLObjectType({
     },
     votesCount: {
       type: GraphQLInt,
-      resolve(parents, args) {
-        return parents.upVote.length - parents.downVote.length;
-      },
     },
+    // votesCount: {
+    //   type: GraphQLInt,
+    //   resolve(parents, args) {
+    //     return parents.upVote.length - parents.downVote.length;
+    //   },
+    // },
     createdAt: { type: GraphQLString },
     updatedAt: { type: GraphQLString },
+    tags: {
+      type: new GraphQLList(TagType),
+      resolve(parents, args) {
+        return Tag.find({ id: { $in: parents.tags } });
+      },
+    },
   }),
 });
 
@@ -162,4 +181,5 @@ module.exports = {
   AddressType,
   BlogPostType,
   CommentType,
+  TagType,
 };

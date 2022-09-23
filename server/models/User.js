@@ -9,13 +9,7 @@ const UserSchema = new mongoose.Schema({
   email: { type: String, unique: true },
   unitNumber: { type: String },
   address: { type: Number },
-  // area: {
-  //   addressOne: { type: String },
-  //   addressTwo: { type: String },
-  //   city: { type: String },
-  //   province: { type: String },
-  //   postalCode: { type: String },
-  // },
+  reputation: { type: Number, default: 0 },
 });
 
 module.exports = mongoose.model("User", UserSchema);

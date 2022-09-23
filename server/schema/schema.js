@@ -14,6 +14,8 @@ const {
   cityQueries,
   addressQueries,
   blogPostQueries,
+  commentQueries,
+  tagQueries,
 } = require("./queries");
 const {
   userMutations,
@@ -22,6 +24,7 @@ const {
   cityMutations,
   addressMutations,
   blogPostMutations,
+  tagMutations,
 } = require("./mutations");
 const { shield } = require("graphql-shield");
 
@@ -34,6 +37,8 @@ const RootQuery = new GraphQLObjectType({
     ...cityQueries,
     ...addressQueries,
     ...blogPostQueries,
+    ...commentQueries,
+    ...tagQueries,
   },
 });
 const RootMutation = new GraphQLObjectType({
@@ -45,6 +50,7 @@ const RootMutation = new GraphQLObjectType({
     ...cityMutations,
     ...addressMutations,
     ...blogPostMutations,
+    ...tagMutations,
   },
 });
 

@@ -18,6 +18,8 @@ const permissions = shield(
       autocompleteAddress: graphQlAuth,
       getBlogPostsByAddress: graphQlAuth,
       getBlogPostById: graphQlAuth,
+      getCommentsByBlogPostId: graphQlAuth,
+      getAllTags: graphQlAuth,
     },
     RootMutationType: {
       updateUserInfo: graphQlAuth,
@@ -31,6 +33,7 @@ const permissions = shield(
       downVotePost: graphQlAuth,
       addComment: graphQlAuth,
       deleteComment: graphQlAuth,
+      addTag: graphQlAuth,
     },
   },
   {

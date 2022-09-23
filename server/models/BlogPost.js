@@ -13,6 +13,7 @@ const BlogPostSchema = new mongoose.Schema({
   commentsCount: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
+  tags: { type: Array, default: [] },
 });
 
 module.exports = mongoose.model("blogPosts", BlogPostSchema);
