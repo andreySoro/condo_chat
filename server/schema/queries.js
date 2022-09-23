@@ -13,6 +13,8 @@ const {
   CityType,
   AddressType,
   BlogPostType,
+  TagType,
+  CommentType,
 } = require("./typeDefenition");
 const User = require("../models/User");
 const Provinces = require("../models/Provinces");
@@ -20,6 +22,8 @@ const Country = require("../models/Country");
 const City = require("../models/City");
 const Address = require("../models/Address");
 const BlogPost = require("../models/BlogPost");
+const Comment = require("../models/Comment");
+const Tag = require("../models/Tags");
 const { extractUserIdFromToken } = require("../utils/extractUserIdFromToken");
 
 //USER QUERIES
@@ -215,6 +219,46 @@ const blogPostQueries = {
   },
 };
 
+//COMMENT QUERIES
+const commentQueries = {
+  getCommentsByBlogPostId: {
+    type: new GraphQLList(CommentType),
+    args: { blogPostId: { type: GraphQLID } },
+    async resolve(parents, args, ctx) {
+      const userId =
+        extractUserIdFromToken(ctx?.headers?.authorization) || null;
+      if (userId) {
+        const commentsArray = await Comment.find({ blogPost: args.blogPostId })
+          // .limit(10)
+          .then((comments) => {
+            return comments.map((individualComments) => {
+              return {
+                ...individualComments._doc,
+                upVote: individualComments.upVote.filter(
+                  (item) => item == userId
+                ),
+                downVote: individualComments.downVote.filter(
+                  (item) => item == userId
+                ),
+              };
+            });
+          });
+        return commentsArray;
+      }
+    },
+  },
+};
+
+//TAG QUERIES
+const tagQueries = {
+  getAllTags: {
+    type: new GraphQLList(TagType),
+    async resolve(parents, args) {
+      return await Tag.find();
+    },
+  },
+};
+
 module.exports = {
   userQueries,
   provinceQueries,
@@ -222,4 +266,6 @@ module.exports = {
   cityQueries,
   addressQueries,
   blogPostQueries,
+  commentQueries,
+  tagQueries,
 };
