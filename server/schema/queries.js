@@ -15,6 +15,7 @@ const {
   BlogPostType,
   TagType,
   CommentType,
+  images,
 } = require("./typeDefenition");
 const User = require("../models/User");
 const Provinces = require("../models/Provinces");
@@ -25,13 +26,28 @@ const BlogPost = require("../models/BlogPost");
 const Comment = require("../models/Comment");
 const Tag = require("../models/Tags");
 const { extractUserIdFromToken } = require("../utils/extractUserIdFromToken");
+const getUploadedImagesUrl = require("../utils/imageUpload");
 
 //USER QUERIES
 const userQueries = {
   getUsers: {
     type: new GraphQLList(UserType),
-    resolve(parents, args) {
+    async resolve(parents, args) {
+      const uploadedImages = await getUploadedImagesUrl(
+        req.files,
+        "posts",
+        storage
+      );
+      console.log("Uploaded images =", uploadedImages);
+
       return User.find();
+    },
+  },
+  test123: {
+    type: UserType,
+    async resolve(parents, { file }) {
+      console.log("file =", file);
+      return "test";
     },
   },
   getUser: {
@@ -141,6 +157,13 @@ const addressQueries = {
     type: new GraphQLList(AddressType),
     resolve(parents, args) {
       return Address.find();
+    },
+  },
+  getCityAdresses: {
+    type: new GraphQLList(AddressType),
+    args: { cityId: { type: GraphQLID } },
+    resolve(parents, args) {
+      return Address.find({ city: args.cityId });
     },
   },
   autocompleteAddress: {

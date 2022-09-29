@@ -14,6 +14,7 @@ const BlogPostSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
   tags: { type: Array, default: [] },
+  imageUrl: { type: String, default: null },
 });
 
 module.exports = mongoose.model("blogPosts", BlogPostSchema);

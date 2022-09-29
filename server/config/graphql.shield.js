@@ -6,6 +6,7 @@ const schema = require("../schema/schema");
 const permissions = shield(
   {
     RootQueryType: {
+      getUsers: graphQlAuth,
       getUser: graphQlAuth,
       getCountries: graphQlAuth,
       getCountryByName: graphQlAuth,

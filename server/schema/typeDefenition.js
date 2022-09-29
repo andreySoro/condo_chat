@@ -139,6 +139,7 @@ const BlogPostType = new GraphQLObjectType({
         return Tag.find({ id: { $in: parents.tags } });
       },
     },
+    imageUrl: { type: GraphQLString },
   }),
 });
 
