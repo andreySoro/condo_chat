@@ -9,11 +9,17 @@ const storage = require("../config/firebaseAppConfig");
 
 async function getUploadedImagesUrl(files, storeId) {
   const images = [];
-  for (let i = 0; i < files.length; i++) {
-    const image = files[i];
-    const imageUrl = await uploadImages(image, storeId);
+  if (Array.isArray(files)) {
+    for (let i = 0; i < files.length; i++) {
+      const image = files[i];
+      const imageUrl = await uploadImages(image, storeId);
+      images.push(imageUrl);
+    }
+  } else {
+    const imageUrl = await uploadImages(files, storeId);
     images.push(imageUrl);
   }
+
   return images;
 }
 
