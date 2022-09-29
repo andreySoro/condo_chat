@@ -8,6 +8,7 @@ const cors = require("cors");
 const { graphqlHTTP } = require("express-graphql");
 const helmet = require("helmet");
 const { schemaWithPermissions } = require("./config/graphql.shield");
+const imageUpload = require("./routes/photoUpload");
 
 // IMPORTED ROUTES
 const auth = require("./routes/auth/");
@@ -18,6 +19,7 @@ const serviceAccount = require("../serviceAccountKey.json");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
+  storageBucket: "condochatapp.appspot.com",
 });
 
 // BACKEND INITIALIZATION-
@@ -34,6 +36,9 @@ app.use(bodyParser.json());
 
 //AUTH RELATED ROUTES
 app.use("/auth", auth);
+
+//IMAGE UPLOAD
+app.use("/upload", imageUpload);
 
 // CONNECT TO DB
 connectDB();

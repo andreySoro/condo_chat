@@ -4,7 +4,9 @@ const { rule } = require("graphql-shield");
 const admin = require("firebase-admin");
 
 const requireAuth = async (req, res, next) => {
-  const token = req.get("Authorization")?.split(" ")[1];
+  const token =
+    req.get("Authorization")?.split(" ")[1] ||
+    req.headers.authorization.split(" ")[1];
 
   if (!token) {
     return res.status(401).json({ message: "Unauthorized" });
@@ -17,6 +19,7 @@ const requireAuth = async (req, res, next) => {
       .then((res) => res)
       .catch((error) => error.message);
   }
+
   if (!decodedToken || !decodedToken.exp) {
     return res.status(401).json({ message: "Unauthorized" });
   }
@@ -25,6 +28,7 @@ const requireAuth = async (req, res, next) => {
     new Date(decodedToken.exp * 1000).getTime() > Date.now() &&
     existingUser
   ) {
+    if (req.headers.authorization.split(" ")[1]) return next();
     return true;
   } else {
     return res.status(401).json({ message: "Unauthorized" });

@@ -27,7 +27,15 @@ const signUp = async (req, res) => {
         id: newUser.localId,
         email: req.body.email,
       });
-      await loacalUser.save();
+      console.log("LOCAL USER==", loacalUser);
+      await loacalUser.save().catch((err) =>
+        res.status(400).send({
+          error: {
+            message:
+              "User already exist, try to sign in or reset your password",
+          },
+        })
+      );
       return res.status(201).send({
         user: newUser,
         message: "User created successfully",

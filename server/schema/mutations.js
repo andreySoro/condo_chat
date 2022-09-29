@@ -184,6 +184,7 @@ const blogPostMutations = {
       message: { type: GraphQLString },
       addressId: { type: GraphQLID },
       tags: { type: new GraphQLList(GraphQLID) },
+      imageUrl: { type: GraphQLString },
     },
     async resolve(parents, args, ctx) {
       const lastIdNumber = await BlogPost.find().then(
@@ -201,6 +202,7 @@ const blogPostMutations = {
         message: args.message,
         address: args.addressId,
         tags: args.tags,
+        imageUrl: args.imageUrl,
       }).save();
     },
   },
