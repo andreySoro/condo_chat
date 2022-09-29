@@ -7,7 +7,7 @@ const signInController = require("../../controllers/auth/signIn.controller");
 const signUpController = require("../../controllers/auth/signUp.controller");
 
 router.post("/forgotPassword", forgotPasswordController);
-router.post("/refreshToken", requireAuth, refreshTokenController);
+router.post("/refreshToken", refreshTokenController);
 router.post("/signIn", signInController);
 router.post("/signUp", signUpController);
 
