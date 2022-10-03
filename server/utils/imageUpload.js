@@ -12,14 +12,21 @@ async function getUploadedImagesUrl(files, storeId) {
   if (Array.isArray(files)) {
     for (let i = 0; i < files.length; i++) {
       const image = files[i];
-      const imageUrl = await uploadImages(image, storeId);
-      images.push(imageUrl);
+      try {
+        const imageUrl = await uploadImages(image, storeId);
+        images.push(imageUrl);
+      } catch (error) {
+        console.log("Error while uploading image", error);
+      }
     }
   } else {
-    const imageUrl = await uploadImages(files, storeId);
-    images.push(imageUrl);
+    try {
+      const imageUrl = await uploadImages(files, storeId);
+      images.push(imageUrl);
+    } catch (error) {
+      console.log("Error while uploading image", error);
+    }
   }
-
   return images;
 }
 
@@ -31,7 +38,9 @@ async function uploadImages(image, storeId) {
 
   return await uploadString(imageRef, image.base64, "base64", {
     contentType: image.type,
-  }).then((snapshot) => getDownloadURL(snapshot.ref));
+  })
+    .then((snapshot) => getDownloadURL(snapshot.ref))
+    .catch((error) => error.message);
 }
 
 module.exports = getUploadedImagesUrl;
