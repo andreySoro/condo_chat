@@ -43,18 +43,18 @@ const userQueries = {
       return User.find();
     },
   },
-  test123: {
-    type: UserType,
-    async resolve(parents, { file }) {
-      console.log("file =", file);
-      return "test";
-    },
-  },
   getUser: {
     type: UserType,
     args: { id: { type: GraphQLID } },
     resolve(parents, args, context) {
       return User.findOne({ id: args.id });
+    },
+  },
+  getUsersForGivenAddress: {
+    type: new GraphQLList(UserType),
+    args: { addressId: { type: GraphQLID } },
+    resolve(parents, args) {
+      return User.find({ addressId: args.addressId });
     },
   },
 };
