@@ -5,7 +5,10 @@ const photoUpload = async (req, res) => {
   // if (!req.body.images || !req.files) {
   //   return res.status(400).send("Photo is not provided");
   // }
-  const uploadedImages = await getUploadedImagesUrl(req.body, "posts");
+  const uploadedImages = await getUploadedImagesUrl(
+    req?.body?.photos,
+    req?.body?.folder
+  );
   if (!uploadedImages || uploadedImages.length === 0) {
     return res.status(400).send({
       data: [],

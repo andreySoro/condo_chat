@@ -254,6 +254,7 @@ const blogPostMutations = {
       postId: { type: GraphQLID },
       message: { type: GraphQLString },
       replyId: { type: GraphQLID },
+      imageUrl: { type: GraphQLString },
     },
     async resolve(parents, args, ctx) {
       const userId =
@@ -269,6 +270,7 @@ const blogPostMutations = {
         author: userId,
         postId: args.postId,
         replyId: args.replyId,
+        imageUrl: args.imageUrl,
       }).save();
 
       if (newComment) {
