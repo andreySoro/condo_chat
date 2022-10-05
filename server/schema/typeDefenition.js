@@ -171,6 +171,7 @@ const CommentType = new GraphQLObjectType({
         return parents.upVote.length - parents.downVote.length;
       },
     },
+    imageUrl: { type: GraphQLString },
   },
 });
 

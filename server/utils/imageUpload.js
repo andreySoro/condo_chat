@@ -7,7 +7,7 @@ const {
 } = require("firebase/storage");
 const storage = require("../config/firebaseAppConfig");
 
-async function getUploadedImagesUrl(files, storeId) {
+async function getUploadedImagesUrl(files, folder) {
   const images = [];
   if (Array.isArray(files)) {
     for (let i = 0; i < files.length; i++) {
@@ -21,7 +21,7 @@ async function getUploadedImagesUrl(files, storeId) {
     }
   } else {
     try {
-      const imageUrl = await uploadImages(files, storeId);
+      const imageUrl = await uploadImages(files, folder);
       images.push(imageUrl);
     } catch (error) {
       console.log("Error while uploading image", error);
@@ -30,10 +30,10 @@ async function getUploadedImagesUrl(files, storeId) {
   return images;
 }
 
-async function uploadImages(image, storeId) {
+async function uploadImages(image, folder) {
   const imageRef = ref(
     storage,
-    `images/${storeId}/` + Date.now() + "-" + image.fileName
+    `images/${folder}/` + Date.now() + "-" + image.fileName
   );
 
   return await uploadString(imageRef, image.base64, "base64", {

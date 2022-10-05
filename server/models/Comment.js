@@ -11,6 +11,7 @@ const CommentSchema = new mongoose.Schema({
   upVote: { type: Array, default: [] },
   downVote: { type: Array, default: [] },
   votesCount: { type: Number, default: 0 },
+  imageUrl: { type: String, default: null },
 });
 
 module.exports = mongoose.model("comments", CommentSchema);
