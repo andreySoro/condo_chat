@@ -21,6 +21,7 @@ const permissions = shield(
       getBlogPostById: graphQlAuth,
       getCommentsByBlogPostId: graphQlAuth,
       getAllTags: graphQlAuth,
+      getUsersForGivenAddress: graphQlAuth,
     },
     RootMutationType: {
       updateUserInfo: graphQlAuth,
