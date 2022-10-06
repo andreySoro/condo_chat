@@ -47,7 +47,7 @@ const userQueries = {
     type: new GraphQLList(UserType),
     args: { addressId: { type: GraphQLID } },
     resolve(parents, args) {
-      return User.find({ addressId: args.addressId });
+      return User.find({ address: args.addressId });
     },
   },
 };
