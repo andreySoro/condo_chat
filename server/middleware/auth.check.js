@@ -46,6 +46,7 @@ const graphQlAuth = rule()(async (parents, args, ctx, info) => {
         .then((res) => res)
         .catch((error) => null);
       if (!decodedToken) return false;
+      console.log("DECODED TOKEN", decodedToken);
       const existingUser = await User.findOne({ id: decodedToken.uid });
 
       if (

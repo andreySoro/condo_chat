@@ -1,4 +1,9 @@
 const axios = require("../../config/axiosConfig.js");
+const admin = require("firebase-admin");
+
+const revokeToken = async () => {
+  return admin.auth();
+};
 
 const signInWithPasswordCall = async (req) => {
   const { email, password } = req.body;

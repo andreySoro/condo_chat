@@ -33,13 +33,6 @@ const userQueries = {
   getUsers: {
     type: new GraphQLList(UserType),
     async resolve(parents, args) {
-      const uploadedImages = await getUploadedImagesUrl(
-        req.files,
-        "posts",
-        storage
-      );
-      console.log("Uploaded images =", uploadedImages);
-
       return User.find();
     },
   },
