@@ -2,7 +2,21 @@ const axios = require("../../config/axiosConfig.js");
 const admin = require("firebase-admin");
 
 const revokeToken = async () => {
-  return admin.auth();
+  return await admin
+    .auth()
+    .revokeRefreshTokens("m2kNbCW6wFWgLEeXsZcxvKoMRhf2")
+    .then(() => admin.auth().getUser("m2kNbCW6wFWgLEeXsZcxvKoMRhf2"))
+    .then((userRecord) => {
+      return new Date(userRecord.tokensValidAfterTime).getTime() / 1000;
+    })
+    .then((timestamp) => {
+      console.log(`Tokens revoked at: ${timestamp}`);
+      return true;
+    })
+    .catch((err) => {
+      console.log(err.message);
+      return false;
+    });
 };
 
 const signInWithPasswordCall = async (req) => {
@@ -65,4 +79,5 @@ module.exports = {
   forgotPasswordCall,
   sendEmailConfirmationCall,
   refreshTokenCall,
+  revokeToken,
 };
