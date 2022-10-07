@@ -26,7 +26,6 @@ const BlogPost = require("../models/BlogPost");
 const Comment = require("../models/Comment");
 const Tag = require("../models/Tags");
 const { extractUserIdFromToken } = require("../utils/extractUserIdFromToken");
-const getUploadedImagesUrl = require("../utils/imageUpload");
 
 //USER QUERIES
 const userQueries = {
