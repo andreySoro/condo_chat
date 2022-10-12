@@ -10,6 +10,7 @@ const UserSchema = new mongoose.Schema({
   unitNumber: { type: String },
   address: { type: Number },
   reputation: { type: Number, default: 0 },
+  fcmTokens: { type: [String], default:[] },
 });
 
 module.exports = mongoose.model("User", UserSchema);

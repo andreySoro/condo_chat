@@ -1,5 +1,4 @@
 const { revokeToken } = require("../../services/auth");
-const admin = require("firebase-admin");
 const getUidFromToken = require("../../utils/getUidFromToken");
 
 const signOut = async (req, res) => {

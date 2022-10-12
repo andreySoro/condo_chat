@@ -79,6 +79,7 @@ const UserType = new GraphQLObjectType({
         return Address.findOne({ id: parents.address });
       },
     },
+    fcmToken: { type: new GraphQLList(GraphQLString)}
   }),
 });
 
