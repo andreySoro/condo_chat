@@ -97,16 +97,15 @@ app.post('/updateFCM', async (req, res) => {
 })
 app.post('/sendNotification', async(req, res) => {
   const userIds = req.body.userIds
-  const listOfFcmTokens = async () => {
-    // const listOfTokens = []
-   return await userIds.map(async (userId) => {
-      const user = await User.findOne({ id: userId });
-      console.log('TOKENS', user.fcmTokens);
-      return user.fcmTokens
-    })
+  const listOfFcmTokens = () => {
+    return userIds.map(async (userId) => {
+        const user = await User.findOne({ id: userId });
+        return user.fcmTokens
+      })
   };
-  const result = await listOfFcmTokens()
-  console.log('List of fcm tokens', result)
+  const result = await Promise.all(listOfFcmTokens()).then(res => res.flat())
+console.log('list of fcm tokens',result)
+ 
   res.status(200).json({ message: "Notification sent" });
 })
 

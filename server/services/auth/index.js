@@ -1,11 +1,11 @@
 const axios = require("../../config/axiosConfig.js");
 const admin = require("firebase-admin");
 
-const revokeToken = async () => {
+const revokeToken = async (userId) => {
   return await admin
     .auth()
-    .revokeRefreshTokens("m2kNbCW6wFWgLEeXsZcxvKoMRhf2")
-    .then(() => admin.auth().getUser("m2kNbCW6wFWgLEeXsZcxvKoMRhf2"))
+    .revokeRefreshTokens(userId)
+    .then(() => admin.auth().getUser(userId))
     .then((userRecord) => {
       return new Date(userRecord.tokensValidAfterTime).getTime() / 1000;
     })
