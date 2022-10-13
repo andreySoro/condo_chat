@@ -9,6 +9,7 @@ const { graphqlHTTP } = require("express-graphql");
 const helmet = require("helmet");
 const { schemaWithPermissions } = require("./config/graphql.shield");
 const imageUpload = require("./routes/photoUpload");
+const User = require("./models/User");
 
 // IMPORTED ROUTES
 const auth = require("./routes/auth/");
@@ -79,10 +80,22 @@ app.use("/auth", auth);
 app.use("/upload", imageUpload);
 
 //FCM NOTIFICATION test
-app.post('/sendFCM', (req, res) => {
+app.post('/sendFCM', async (req, res) => {
   const fcmToken = req.body.fcmToken
   const userId = req.body.userId
-  console.log('USER', userId, 'FCM TOKEN', fcmToken)
+  const existedUser = await User.findOne({ id: userId });
+  if(existedUser){
+    if(existedUser.fcmTokens.includes(fcmToken)){
+      console.log("FCM token already exists");
+      res.status(200).json({ message: "FCM token already exists" });
+    } else {
+      existedUser.fcmTokens.push(fcmToken);
+      await existedUser.save();
+      res.status(200).json({ message: "FCM token added" });
+    }
+  }
+
+
 })
 
 // CONNECT TO DB
