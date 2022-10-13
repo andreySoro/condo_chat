@@ -81,8 +81,8 @@ app.use("/upload", imageUpload);
 //FCM NOTIFICATION test
 app.post('/sendFCM', (req, res) => {
   const fcmToken = req.body.fcmToken
-  const user = req.body.user
-  console.log('USER', user, 'FCM TOKEN', fcmToken)
+  const userId = req.body.userId
+  console.log('USER', userId, 'FCM TOKEN', fcmToken)
 })
 
 // CONNECT TO DB
