@@ -80,7 +80,7 @@ app.use("/auth", auth);
 app.use("/upload", imageUpload);
 
 //FCM NOTIFICATION test
-app.post('/sendFCM', async (req, res) => {
+app.post('/updateFCM', async (req, res) => {
   const fcmToken = req.body.fcmToken
   const userId = req.body.userId
   const existedUser = await User.findOne({ id: userId });
@@ -94,6 +94,20 @@ app.post('/sendFCM', async (req, res) => {
       res.status(200).json({ message: "FCM token added" });
     }
   }
+})
+app.post('/sendNotification', async(req, res) => {
+  const userIds = req.body.userIds
+  const listOfFcmTokens = async () => {
+    // const listOfTokens = []
+   return await userIds.map(async (userId) => {
+      const user = await User.findOne({ id: userId });
+      console.log('TOKENS', user.fcmTokens);
+      return user.fcmTokens
+    })
+  };
+  const result = await listOfFcmTokens()
+  console.log('List of fcm tokens', result)
+  res.status(200).json({ message: "Notification sent" });
 })
 
 // CONNECT TO DB
