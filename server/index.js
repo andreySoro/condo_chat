@@ -94,8 +94,6 @@ app.post('/sendFCM', async (req, res) => {
       res.status(200).json({ message: "FCM token added" });
     }
   }
-
-
 })
 
 // CONNECT TO DB
