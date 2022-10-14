@@ -97,6 +97,7 @@ app.post('/updateFCM', async (req, res) => {
 })
 app.post('/sendNotification', async(req, res) => {
   const userIds = req.body.userIds
+  const {message, title} = req.body
   const listOfFcmTokens = () => {
     return userIds.map(async (userId) => {
         const user = await User.findOne({ id: userId });
@@ -104,8 +105,15 @@ app.post('/sendNotification', async(req, res) => {
       })
   };
   const result = await Promise.all(listOfFcmTokens()).then(res => res.flat())
-console.log('list of fcm tokens',result)
- 
+  console.log('TOKENS', result);
+  await admin.messaging().sendToDevice(result, {
+    data: {},
+    notification: {
+      title,
+      body: message,
+    },
+  }).then(res => console.log('SUCCESSFULY SENT NOTIFICATIONS', res)).catch(err => console.log('ERROR', err));
+
   res.status(200).json({ message: "Notification sent" });
 })
 
