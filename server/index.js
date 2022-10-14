@@ -111,6 +111,7 @@ app.post('/sendNotification', async(req, res) => {
     notification: {
       title,
       body: message,
+      clickAction: "FLUTTER_NOTIFICATION_CLICK"
     },
   }).then(res => console.log('SUCCESSFULY SENT NOTIFICATIONS', res)).catch(err => console.log('ERROR', err));
 
