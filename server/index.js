@@ -108,7 +108,7 @@ app.post('/sendNotification', async(req, res) => {
   console.log('TOKENS', result);
   await admin.messaging().sendToDevice(result, {
     data: {
-      chatId
+      chatId: String(chatId),
     },
     notification: {
       title,
