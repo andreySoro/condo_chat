@@ -5,6 +5,6 @@ const photoUploadController = require("../../controllers/photoUpload/photoUpload
 const multer = require("multer");
 const upload = multer();
 
-router.post("/image", upload.any(), photoUploadController);
+router.post("/image", requireAuth, upload.any(), photoUploadController);
 
 module.exports = router;

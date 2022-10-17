@@ -23,44 +23,6 @@ admin.initializeApp({
   storageBucket: "condochatapp.appspot.com",
 });
 
-// const message = {
-//   data: {},
-//   notification: {
-//     title: "This is very important message",
-//     body: "Tomorrow is a day off so ya hoooo"
-//   },
-//   topic: "backendTest"
-// };
-
-//TOPIC MESSAGING
-// admin.messaging().send(message)
-//   .then((response) => {
-//     // Response is a message ID string.
-//     console.log('Successfully sent message:', response);
-//   })
-//   .catch((error) => {
-//     console.log('Error sending message:', error);
-//   });
-
-//DIRECT MESSAGING
-// admin.messaging().sendToDevice(
-//   ["eh9GUWczQKiJ5gNfLdAxK2:APA91bFUcTSqH25fHpwwmoz0NiwhmjECdasMWg0jeVzpFdB3mf9n2hwkZAx_K0BVmqZl1kQKfEl6IKQXRP20Yu8fVkRu1EyHAJWedT4lb5W5mBp-fo-DI_2zcU9Iar3Ul0iGRAeheyck"], // device fcm tokens...
-//   {
-//     data: {},
-//     notification: {
-//       body: "This is FCM notification test from ADMIN #2",
-//       title: "Message test from Backend"
-//     },
-//   },
-//   {
-//     // Required for background/quit data-only messages on iOS
-//     contentAvailable: true,
-//     // Required for background/quit data-only messages on Android
-//     priority: 'high',
-//   },
-// ).then(res => console.log('SUCCESS', res)).catch(err => console.log('ERROR', err));
-
-
 // BACKEND INITIALIZATION-
 const app = express();
 app.use(
