@@ -28,6 +28,7 @@ const requireAuth = async (req, res, next) => {
     new Date(decodedToken.exp * 1000).getTime() > Date.now() &&
     existingUser
   ) {
+    req.UserId = decodedToken.user_id;
     if (req.headers.authorization.split(" ")[1]) return next();
     return true;
   } else {

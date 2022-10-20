@@ -1,0 +1,17 @@
+[
+  {
+    "_id": "3c99cb84-8583-436b-ad8f-30e134533ea5",
+    "colName": "CondoChatApp",
+    "created": "2022-10-18T16:35:05.323Z",
+    "sortNum": 10000,
+    "folders": [
+      {
+        "_id": "3cdbb884-ffe7-4c76-b376-425b9ac09958",
+        "name": "Auth",
+        "containerId": "",
+        "created": "2022-10-18T16:35:05.324Z",
+        "sortNum": 10000
+      }
+    ]
+  }
+]

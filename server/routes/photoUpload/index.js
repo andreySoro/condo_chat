@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const { requireAuth } = require("../../middleware/auth.check");
-const photoUploadController = require("../../controllers/photoUpload/photoUpload.controller");
+const { photoUpload, profilePhotoUpload } = require("../../controllers/photoUpload/photoUpload.controller");
 const multer = require("multer");
 const upload = multer();
 
-router.post("/image", requireAuth, upload.any(), photoUploadController);
+router.post("/image", requireAuth, upload.any(), photoUpload);
+router.post("/image/profile", requireAuth, upload.any(), profilePhotoUpload);
 
 module.exports = router;
