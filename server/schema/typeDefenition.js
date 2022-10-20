@@ -73,6 +73,7 @@ const UserType = new GraphQLObjectType({
     email: { type: GraphQLString },
     unitNumber: { type: GraphQLString },
     reputation: { type: GraphQLInt },
+    profileImgUri: { type: GraphQLString },
     address: {
       type: AddressType,
       resolve(parents, args) {
