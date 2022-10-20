@@ -1,46 +1,39 @@
-const {
-  ref,
-  uploadBytesResumable,
-  getDownloadURL,
-  uploadBytes,
-  uploadString,
-} = require("firebase/storage");
-const storage = require("../config/firebaseAppConfig");
 
-async function getUploadedImagesUrl(files, folder) {
-  const images = [];
-  if (Array.isArray(files)) {
-    for (let i = 0; i < files.length; i++) {
-      const image = files[i];
-      try {
-        const imageUrl = await uploadImages(image, storeId);
-        images.push(imageUrl);
-      } catch (error) {
-        console.log("Error while uploading image", error);
-      }
-    }
-  } else {
-    try {
-      const imageUrl = await uploadImages(files, folder);
-      images.push(imageUrl);
-    } catch (error) {
-      console.log("Error while uploading image", error);
-    }
+const admin = require("firebase-admin")
+const uuid = require("uuid");
+
+async function getUploadedImagesUrl(files, folder, userId) {
+  const images =[]
+  const filePath = `images/${folder}/${userId}/${Date.now() + "-"+ files.originalname}`;
+  const bucket = admin.storage().bucket()
+  const uploadImage = (filePath, file) => {
+    return new Promise((resolve, reject) => {
+      const blob = bucket.file(filePath);
+      const uuidToken = uuid.v4()
+      const blobStream = blob.createWriteStream({
+        gzip: true,
+        resumable: false,
+        contentType: file.mimetype,
+        metadata: {
+          metadata: {
+            firebaseStorageDownloadTokens: uuidToken,
+          }
+        }
+      });
+      blobStream.on('error', (error) => {
+        reject(error);
+      });
+      blobStream.on('finish', () => {
+        const publicUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(blob.name)}?alt=media&token=${uuidToken}`;
+        resolve(publicUrl);
+      });
+      blobStream.end(file.buffer, 'base64');
+    });
   }
-  return images;
-}
 
-async function uploadImages(image, folder) {
-  const imageRef = ref(
-    storage,
-    `images/${folder}/` + Date.now() + "-" + image.fileName
-  );
-
-  return await uploadString(imageRef, image.base64, "base64", {
-    contentType: image.type,
-  })
-    .then((snapshot) => getDownloadURL(snapshot.ref))
-    .catch((error) => error.message);
+  const url = await uploadImage(filePath, files).then(data => data)
+  images.push(url)
+  return images
 }
 
 module.exports = getUploadedImagesUrl;

@@ -1,13 +1,16 @@
 const getUploadedImagesUrl = require("../../utils/imageUpload");
+const getUidFromToken = require("../../utils/getUidFromToken");
 
 const photoUpload = async (req, res) => {
-  console.log(req.body);
-  // if (!req.body.images || !req.files) {
-  //   return res.status(400).send("Photo is not provided");
-  // }
+  const token = await getUidFromToken(req.headers.authorization.split(" ")[1]);
+  if (!req.body.photos || !req.body.folder) {
+    return res.status(400).send("Photo or folder is not provided");
+  }
+  const folder = ["profile", "posts", "comments"];
   const uploadedImages = await getUploadedImagesUrl(
-    req?.body?.photos,
-    req?.body?.folder
+    req.body.photos,
+    folder[req.body.folder],
+    token,
   );
   if (!uploadedImages || uploadedImages.length === 0) {
     return res.status(400).send({
