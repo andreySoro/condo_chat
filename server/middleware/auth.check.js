@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const { rule } = require("graphql-shield");
 const admin = require("firebase-admin");
-const jwt = require('jsonwebtoken');
+
 
 const requireAuth = async (req, res, next) => {
   const token =
