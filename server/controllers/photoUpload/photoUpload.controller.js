@@ -3,10 +3,13 @@ const getUidFromToken = require("../../utils/getUidFromToken");
 
 const photoUpload = async (req, res) => {
   const token = await getUidFromToken(req.headers.authorization.split(" ")[1]);
-  if (!req.body.photos || !req.body.folder) {
+  console.log(req.body.photos);
+  console.log(req.body.folder);
+  if (!req.body.photos || (!req.body.folder && req.body.folder !== 0)) {
     return res.status(400).send("Photo or folder is not provided");
   }
   const folder = ["profile", "posts", "comments"];
+  
   const uploadedImages = await getUploadedImagesUrl(
     req.body.photos,
     folder[req.body.folder],
