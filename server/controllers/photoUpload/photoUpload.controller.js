@@ -1,5 +1,6 @@
 const getUploadedImagesUrl = require("../../utils/imageUpload");
 const getUidFromToken = require("../../utils/getUidFromToken");
+const jwt = require('jsonwebtoken');
 
 const photoUpload = async (req, res) => {
   const token = await getUidFromToken(req.headers.authorization.split(" ")[1]);

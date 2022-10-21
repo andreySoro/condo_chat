@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const { rule } = require("graphql-shield");
 const admin = require("firebase-admin");
+const jwt = require('jsonwebtoken');
 
 const requireAuth = async (req, res, next) => {
   const token =
@@ -41,11 +42,7 @@ const graphQlAuth = rule()(async (parents, args, ctx, info) => {
     const token = ctx.headers.authorization.split(" ")[1];
 
     if (token) {
-      const decodedToken = await admin
-        .auth()
-        .verifyIdToken(token)
-        .then((res) => res)
-        .catch((error) => null);
+      const decodedToken = jwt.decode(token)
       if (!decodedToken) return false;
       console.log("DECODED TOKEN", decodedToken);
       const existingUser = await User.findOne({ id: decodedToken.uid });
