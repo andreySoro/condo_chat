@@ -45,11 +45,11 @@ const graphQlAuth = rule()(async (parents, args, ctx, info) => {
       const decodedToken = jwt.decode(token)
       if (!decodedToken) return false;
       console.log("DECODED TOKEN", decodedToken);
-      const existingUser = await User.findOne({ id: decodedToken.uid });
+      // const existingUser = await User.findOne({ id: decodedToken.uid });
 
       if (
         decodedToken &&
-        existingUser &&
+        // existingUser &&
         new Date(decodedToken.exp * 1000) > Date.now()
       ) {
         return true;
