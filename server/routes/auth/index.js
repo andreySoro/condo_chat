@@ -6,11 +6,13 @@ const refreshTokenController = require("../../controllers/auth/refreshToken.cont
 const signInController = require("../../controllers/auth/signIn.controller");
 const signUpController = require("../../controllers/auth/signUp.controller");
 const signOutController = require("../../controllers/auth/signOut.controller");
+const googleController = require("../../controllers/auth/google.controller");
 
 router.post("/forgotPassword", forgotPasswordController);
 router.post("/refreshToken", refreshTokenController);
 router.post("/signIn", signInController);
 router.post("/signUp", signUpController);
 router.post("/signOut", signOutController);
+router.post("/google", googleController);
 
 module.exports = router;
