@@ -13,9 +13,10 @@ const googleSignIn = async (req, res) => {
     const { email, sub, name, picture } = data;
     const user = await User.findOne({ email });
     console.log('user data= ', data)
+    console.log('user in mongoDB= ', user)
     if (user) {
         // const token = await admin.auth().createCustomToken(user.id.toString());
-        res.status(200).json({ registered: true, accessToken:idToken, user });
+        return res.status(200).json({ registered: true, accessToken:idToken, user });
     } else {
         const {uid} = await admin.auth().getUserByEmail(email)
         if(uid){
@@ -27,7 +28,7 @@ const googleSignIn = async (req, res) => {
                 profileImgUri: picture,
                 });
             await newUser.save();
-            res.status(200).json({ newUser, token });
+           return res.status(200).json({ newUser, token });
         }
     }
 }
