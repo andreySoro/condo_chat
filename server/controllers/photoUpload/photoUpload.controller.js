@@ -43,7 +43,7 @@ const photoUpload = async (req, res) => {
     // Catch error and handle before committing.
   }
 
-  return res.status(200).json(userUpdate);
+  return res.status(200).json({ uploadedImages });
 };
 
 const profilePhotoUpload = async (req, res) => {
