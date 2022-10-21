@@ -1,7 +1,9 @@
 const getUploadedImagesUrl = require("../../utils/imageUpload");
 const getUidFromToken = require("../../utils/getUidFromToken");
+const User = require('../../models/User');
 
 const photoUpload = async (req, res) => {
+  const UserId = req.UserId;
   const token = await getUidFromToken(req.headers.authorization.split(" ")[1]);
   console.log(req.body.photos);
   console.log(req.body.folder);
@@ -21,6 +23,24 @@ const photoUpload = async (req, res) => {
       data: [],
       error: { message: "Photo is not provided or nothing was uploaded" },
     });
+  }
+
+  // Upon successful upload complete any bookkeeping tasks for the user
+  //  regarding the upload.
+  if (req.body.folder === 0) {
+    // If it was a profile image, set the users profileImgUri
+    //  to the new Uri.
+    console.log(`Attempting to set User profileImgUri to: ${uploadedImages[0]}`);
+    const userUpdate = await User.findOneAndUpdate(
+      { id: UserId },
+      {
+        $set: {
+          profileImgUri: uploadedImages[0]
+        }
+      },
+      { new: true }
+    );
+    // Catch error and handle before committing.
   }
 
   return res.status(200).json({ uploadedImages });
