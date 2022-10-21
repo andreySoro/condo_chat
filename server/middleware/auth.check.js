@@ -3,6 +3,7 @@ const User = require("../models/User");
 const { rule } = require("graphql-shield");
 const admin = require("firebase-admin");
 
+
 const requireAuth = async (req, res, next) => {
   const token =
     req?.get("Authorization")?.split(" ")[1] ||
@@ -41,18 +42,14 @@ const graphQlAuth = rule()(async (parents, args, ctx, info) => {
     const token = ctx.headers.authorization.split(" ")[1];
 
     if (token) {
-      const decodedToken = await admin
-        .auth()
-        .verifyIdToken(token)
-        .then((res) => res)
-        .catch((error) => null);
+      const decodedToken = jwt.decode(token)
       if (!decodedToken) return false;
       console.log("DECODED TOKEN", decodedToken);
-      const existingUser = await User.findOne({ id: decodedToken.uid });
+      // const existingUser = await User.findOne({ id: decodedToken.uid });
 
       if (
         decodedToken &&
-        existingUser &&
+        // existingUser &&
         new Date(decodedToken.exp * 1000) > Date.now()
       ) {
         return true;

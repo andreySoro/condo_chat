@@ -1,6 +1,7 @@
 const getUploadedImagesUrl = require("../../utils/imageUpload");
 const getUidFromToken = require("../../utils/getUidFromToken");
 const User = require('../../models/User');
+const jwt = require('jsonwebtoken');
 
 const photoUpload = async (req, res) => {
   const UserId = req.UserId;

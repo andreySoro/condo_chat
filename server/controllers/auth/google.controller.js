@@ -11,7 +11,7 @@ const googleSignIn = async (req, res) => {
         `https://oauth2.googleapis.com/tokeninfo?id_token=${idToken}`
     );
     const { email, sub, name, picture } = data;
-    console.log('user email= ', user) 
+    console.log('user email= ', email) 
     const user = await User.findOne({ email: email });
     console.log('user data= ', data)
     console.log('user in mongoDB= ', user)
