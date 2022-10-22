@@ -25,7 +25,6 @@ const Address = require("../models/Address");
 const BlogPost = require("../models/BlogPost");
 const Comment = require("../models/Comment");
 const Tag = require("../models/Tags");
-const { extractUserIdFromToken } = require("../utils/extractUserIdFromToken");
 
 //USER QUERIES
 const userQueries = {
@@ -193,8 +192,7 @@ const blogPostQueries = {
     type: new GraphQLList(BlogPostType),
     args: { addressId: { type: GraphQLID } },
     async resolve(parents, args, ctx) {
-      const userId =
-        extractUserIdFromToken(ctx?.headers?.authorization) || null;
+      const userId = ctx?.headers?.userId;
       if (userId) {
         const postsArray = await BlogPost.find({
           address: args.addressId,
@@ -219,8 +217,7 @@ const blogPostQueries = {
     type: BlogPostType,
     args: { id: { type: GraphQLID } },
     async resolve(parents, args, ctx) {
-      const userId =
-        extractUserIdFromToken(ctx?.headers?.authorization) || null;
+      const userId = ctx?.headers?.userId;
       if (userId) {
         return BlogPost.findOne({ id: args.id }).then((blogPost) => {
           return {
@@ -240,8 +237,7 @@ const commentQueries = {
     type: new GraphQLList(CommentType),
     args: { blogPostId: { type: GraphQLID } },
     async resolve(parents, args, ctx) {
-      const userId =
-        extractUserIdFromToken(ctx?.headers?.authorization) || null;
+      const userId = ctx?.headers?.userId;
       if (userId) {
         const commentsArray = await Comment.find({ postId: args.blogPostId })
           // .limit(10)

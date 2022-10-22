@@ -1,10 +1,12 @@
 const { revokeToken } = require("../../services/auth");
-const getUidFromToken = require("../../utils/getUidFromToken");
+const {
+  extractUserIdFromToken,
+} = require("../../utils/extractUserIdFromToken");
 
 const signOut = async (req, res) => {
   const token = req?.headers?.authorization?.split(" ")[1];
   if (!token) return res.status(400).json({ message: "No token provided" });
-  const uid = await getUidFromToken(token);
+  const uid = await extractUserIdFromToken(token);
   if (!uid) return res.status(400).json({ message: "Invalid token" });
 
   const revoked = await revokeToken(uid);

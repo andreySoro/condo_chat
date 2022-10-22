@@ -1,13 +1,9 @@
 const getUploadedImagesUrl = require("../../utils/imageUpload");
-const getUidFromToken = require("../../utils/getUidFromToken");
-const jwt = require("jsonwebtoken");
 const User = require("../../models/User");
 
 const photoUpload = async (req, res) => {
   const UserId = req.UserId;
-  const token = await getUidFromToken(req.headers.authorization.split(" ")[1]);
-  console.log(req.body.photos);
-  console.log(req.body.folder);
+
   if (!req.body.photos || (!req.body.folder && req.body.folder !== 0)) {
     return res.status(400).send("Photo or folder is not provided");
   }
@@ -16,7 +12,7 @@ const photoUpload = async (req, res) => {
   const uploadedImages = await getUploadedImagesUrl(
     req.body.photos,
     folder[req.body.folder],
-    token
+    UserId
   );
 
   if (!uploadedImages || uploadedImages.length === 0) {

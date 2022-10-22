@@ -24,7 +24,6 @@ const Address = require("../models/Address");
 const BlogPost = require("../models/BlogPost");
 const Comment = require("../models/Comment");
 const Tag = require("../models/Tags");
-const { extractUserIdFromToken } = require("../utils/extractUserIdFromToken");
 const { updateReputation } = require("../utils/updateReputation");
 const { votePost } = require("../utils/voting");
 
@@ -190,8 +189,7 @@ const blogPostMutations = {
       const lastIdNumber = await BlogPost.find().then(
         (res) => res[res?.length - 1]?.id || 0
       );
-      const userId =
-        extractUserIdFromToken(ctx?.headers?.authorization) || null;
+      const userId = ctx?.headers?.userId;
 
       const isAddressExists = await Address.findOne({ id: args.addressId });
       if (!isAddressExists) throw new Error("Address does not exist");
@@ -214,8 +212,7 @@ const blogPostMutations = {
         id: args.postId,
       });
       if (!post) throw new Error("Post does not exist");
-      const userId =
-        extractUserIdFromToken(ctx?.headers?.authorization) || null;
+      const userId = ctx?.headers?.userId;
       if (!userId) throw new Error("Cannot find userId, bad token...┐(°_°)┌");
       const isUpvoted = post.upVote.includes(userId);
       const isDownVoted = post.downVote.includes(userId);
@@ -235,8 +232,7 @@ const blogPostMutations = {
         id: args.postId,
       });
       if (!post) throw new Error("Post does not exist");
-      const userId =
-        extractUserIdFromToken(ctx?.headers?.authorization) || null;
+      const userId = ctx?.headers?.userId;
       if (!userId) throw new Error("Cannot find userId, bad token...┐(°_°)┌");
       const isDownVoted = post.downVote.includes(userId);
       const isUpvoted = post.upVote.includes(userId);
@@ -257,8 +253,7 @@ const blogPostMutations = {
       imageUrl: { type: GraphQLString },
     },
     async resolve(parents, args, ctx) {
-      const userId =
-        extractUserIdFromToken(ctx?.headers?.authorization) || null;
+      const userId = ctx?.headers?.userId;
       const lastIdNumber = await Comment.find().then(
         (res) => res[res?.length - 1]?.id || 0
       );
