@@ -1,24 +1,20 @@
 const getUploadedImagesUrl = require("../../utils/imageUpload");
-const getUidFromToken = require("../../utils/getUidFromToken");
-const User = require('../../models/User');
-const jwt = require('jsonwebtoken');
+const User = require("../../models/User");
 
 const admin = require('firebase-admin');
 
 const photoUpload = async (req, res) => {
   const UserId = req.UserId;
-  const token = await getUidFromToken(req.headers.authorization.split(" ")[1]);
-  console.log(req.body.photos);
-  console.log(req.body.folder);
+
   if (!req.body.photos || (!req.body.folder && req.body.folder !== 0)) {
     return res.status(400).send("Photo or folder is not provided");
   }
   const folder = ["profile", "posts", "comments"];
-  
+
   const uploadedImages = await getUploadedImagesUrl(
     req.body.photos,
     folder[req.body.folder],
-    token,
+    UserId
   );
 
   if (!uploadedImages || uploadedImages.length === 0) {
@@ -52,13 +48,15 @@ const photoUpload = async (req, res) => {
 
     // Set the users profileImgUri
     //  to the new Uri.
-    console.log(`Attempting to set User profileImgUri to: ${uploadedImages[0]}`);
+    console.log(
+      `Attempting to set User profileImgUri to: ${uploadedImages[0]}`
+    );
     const userUpdate = await User.findOneAndUpdate(
       { id: UserId },
       {
         $set: {
-          profileImgUri: uploadedImages[0]
-        }
+          profileImgUri: uploadedImages[0],
+        },
       },
       { new: true }
     );
@@ -75,21 +73,22 @@ const profilePhotoUpload = async (req, res) => {
     return res.status(401).send({
       data: [],
       error: {
-        message: "Please provide only a single image file."
-      }
-    })
+        message: "Please provide only a single image file.",
+      },
+    });
   }
 
   // Check that the extension is either a jpg, jpeg, or png.
-  const extension = req.body.photos[0].originalname.split('.')[1];
+  const extension = req.body.photos[0].originalname.split(".")[1];
 
-  if (extension !== 'jpg'
-    && extension !== 'jpeg'
-    && extension !== 'png') {
+  if (extension !== "jpg" && extension !== "jpeg" && extension !== "png") {
     return res.status(401).send({
       data: [],
-      error: { message: "Please provide a file with one of the following extensions: [jpg, jpeg, png]" }
-    })
+      error: {
+        message:
+          "Please provide a file with one of the following extensions: [jpg, jpeg, png]",
+      },
+    });
   }
 
   const uploadedImages = await getUploadedImagesUrl(
@@ -106,7 +105,7 @@ const profilePhotoUpload = async (req, res) => {
   }
 
   return res.status(200).json({ uploadedImages });
-}
+};
 
 module.exports = {
   photoUpload

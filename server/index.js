@@ -33,7 +33,8 @@ app.use(
   })
 );
 app.use(cors());
-app.use(bodyParser.json());
+
+app.use(bodyParser.json({ limit: "50mb", extended: true }));
 
 //AUTH RELATED ROUTES
 app.use("/auth", auth);
@@ -42,12 +43,12 @@ app.use("/auth", auth);
 app.use("/upload", imageUpload);
 
 //FCM NOTIFICATION test
-app.post('/updateFCM', async (req, res) => {
-  const fcmToken = req.body.fcmToken
-  const userId = req.body.userId
+app.post("/updateFCM", async (req, res) => {
+  const fcmToken = req.body.fcmToken;
+  const userId = req.body.userId;
   const existedUser = await User.findOne({ id: userId });
-  if(existedUser){
-    if(existedUser.fcmTokens.includes(fcmToken)){
+  if (existedUser) {
+    if (existedUser.fcmTokens.includes(fcmToken)) {
       console.log("FCM token already exists");
       res.status(200).json({ message: "FCM token already exists" });
     } else {
@@ -56,30 +57,34 @@ app.post('/updateFCM', async (req, res) => {
       res.status(200).json({ message: "FCM token added" });
     }
   }
-})
-app.post('/sendNotification', async(req, res) => {
-  const userIds = req.body.userIds
-  const {message, title, chatId} = req.body
+});
+app.post("/sendNotification", async (req, res) => {
+  const userIds = req.body.userIds;
+  const { message, title, chatId } = req.body;
   const listOfFcmTokens = () => {
     return userIds.map(async (userId) => {
-        const user = await User.findOne({ id: userId });
-        return user.fcmTokens
-      })
+      const user = await User.findOne({ id: userId });
+      return user.fcmTokens;
+    });
   };
-  const result = await Promise.all(listOfFcmTokens()).then(res => res.flat())
-  console.log('TOKENS', result);
-  await admin.messaging().sendToDevice(result, {
-    data: {
-      chatId: String(chatId),
-    },
-    notification: {
-      title,
-      body: message,
-    },
-  }).then(res => console.log('SUCCESSFULY SENT NOTIFICATIONS', res)).catch(err => console.log('ERROR', err));
+  const result = await Promise.all(listOfFcmTokens()).then((res) => res.flat());
+  console.log("TOKENS", result);
+  await admin
+    .messaging()
+    .sendToDevice(result, {
+      data: {
+        chatId: String(chatId),
+      },
+      notification: {
+        title,
+        body: message,
+      },
+    })
+    .then((res) => console.log("SUCCESSFULY SENT NOTIFICATIONS", res))
+    .catch((err) => console.log("ERROR", err));
 
   res.status(200).json({ message: "Notification sent" });
-})
+});
 
 // CONNECT TO DB
 connectDB();
