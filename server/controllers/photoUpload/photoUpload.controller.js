@@ -3,6 +3,8 @@ const getUidFromToken = require("../../utils/getUidFromToken");
 const User = require('../../models/User');
 const jwt = require('jsonwebtoken');
 
+const admin = require('firebase-admin');
+
 const photoUpload = async (req, res) => {
   const UserId = req.UserId;
   const token = await getUidFromToken(req.headers.authorization.split(" ")[1]);
@@ -29,7 +31,20 @@ const photoUpload = async (req, res) => {
   // Upon successful upload complete any bookkeeping tasks for the user
   //  regarding the upload.
   if (req.body.folder === 0) {
-    // If it was a profile image, set the users profileImgUri
+    // If it was a profile image
+
+    const user = await User.find({ id: UserId }).exec();
+    const oldUri = user.profileImgUri;
+
+    if (oldUri) {
+      // Find and delete the old image from our bucket.
+      const bucket = admin.storage().bucket();
+      const oldFile = bucket.file(oldUri);
+
+      await oldFile.delete();
+    }
+
+    // Set the users profileImgUri
     //  to the new Uri.
     console.log(`Attempting to set User profileImgUri to: ${uploadedImages[0]}`);
     const userUpdate = await User.findOneAndUpdate(
@@ -89,5 +104,5 @@ const profilePhotoUpload = async (req, res) => {
 
 module.exports = {
   photoUpload,
-  profilePhotoUpload,
+  profilePhotoUpload
 };
