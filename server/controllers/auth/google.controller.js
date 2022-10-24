@@ -19,7 +19,7 @@ const googleSignIn = async (req, res) => {
       registered: true,
       accessToken: idToken,
       user,
-      navigate_to: "BottomTabs",
+      navigate_to: "BottomTab",
     });
   } else {
     const uid = await extractUserIdFromToken(idToken);
