@@ -15,16 +15,15 @@ const googleSignIn = async (req, res) => {
   const user = await User.findOne({ email: email });
   if (user) {
     // const token = await admin.auth().createCustomToken(user.id.toString());
-    return res
-      .status(200)
-      .json({
-        registered: true,
-        accessToken: idToken,
-        user,
-        navigate_to: "BottomTabs",
-      });
+    return res.status(200).json({
+      registered: true,
+      accessToken: idToken,
+      user,
+      navigate_to: "BottomTabs",
+    });
   } else {
-    const { uid } = await extractUserIdFromToken(idToken);
+    const uid = await extractUserIdFromToken(idToken);
+
     if (uid) {
       const newUser = await User.create({
         id: uid,
