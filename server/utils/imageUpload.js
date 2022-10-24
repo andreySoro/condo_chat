@@ -4,7 +4,7 @@ const uuid = require("uuid");
 
 async function getUploadedImagesUrl(files, folder, userId) {
   const images =[]
-  const filePath = `images/${folder}/${userId}/${Date.now() + "-"+ files.originalname}`;
+  const filePath = `images/${folder}/${userId}/${Date.now() + "-" + files.originalname}`;
   const bucket = admin.storage().bucket()
   const uploadImage = (filePath, file) => {
     return new Promise((resolve, reject) => {
