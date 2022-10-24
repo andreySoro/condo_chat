@@ -17,7 +17,12 @@ const googleSignIn = async (req, res) => {
     // const token = await admin.auth().createCustomToken(user.id.toString());
     return res
       .status(200)
-      .json({ registered: true, accessToken: idToken, user });
+      .json({
+        registered: true,
+        accessToken: idToken,
+        user,
+        navigate_to: "BottomTabs",
+      });
   } else {
     const { uid } = await extractUserIdFromToken(idToken);
     if (uid) {
@@ -28,7 +33,9 @@ const googleSignIn = async (req, res) => {
         profileImgUri: picture,
       });
       await newUser.save();
-      return res.status(200).json({ newUser, accessToken: idToken });
+      return res
+        .status(200)
+        .json({ newUser, accessToken: idToken, navigate_to: "Name" });
     }
   }
 };
