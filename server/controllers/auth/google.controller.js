@@ -7,12 +7,14 @@ const {
 
 const googleSignIn = async (req, res) => {
   const { idToken } = req.body;
-
+  console.log("REQ", req.body, idToken);
   const { data } = await axios.post(
     `https://oauth2.googleapis.com/tokeninfo?id_token=${idToken}`
   );
+  console.log("userData", data);
   const { email, sub, name, picture } = data;
   const user = await User.findOne({ email: email });
+  console.log("user", user);
   if (user) {
     // const token = await admin.auth().createCustomToken(user.id.toString());
     return res.status(200).json({
@@ -23,7 +25,7 @@ const googleSignIn = async (req, res) => {
     });
   } else {
     const uid = await extractUserIdFromToken(idToken);
-
+    console.log("uid token", uid);
     if (uid) {
       const newUser = await User.create({
         id: uid,
