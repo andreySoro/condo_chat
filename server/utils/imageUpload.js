@@ -1,4 +1,3 @@
-
 const admin = require("firebase-admin")
 const uuid = require("uuid");
 
@@ -31,9 +30,9 @@ async function getUploadedImagesUrl(files, folder, userId) {
     });
   }
 
-  const url = await uploadImage(filePath, files).then(data => data)
-  images.push(url)
-  return images
+  const url = await uploadImage(filePath, files).then(data => data);
+  images.push(url);
+  return images;
 }
 
 module.exports = getUploadedImagesUrl;

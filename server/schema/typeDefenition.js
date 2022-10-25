@@ -133,8 +133,14 @@ const BlogPostType = new GraphQLObjectType({
     //     return parents.upVote.length - parents.downVote.length;
     //   },
     // },
-    createdAt: { type: GraphQLString },
-    updatedAt: { type: GraphQLString },
+    createdAt: {
+      type: Date,
+      default: Date.now
+    },
+    updatedAt: {
+      type: Date,
+      default: Date.now
+    },
     tags: {
       type: new GraphQLList(TagType),
       resolve(parents, args) {
