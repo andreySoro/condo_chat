@@ -36,7 +36,7 @@ const googleSignIn = async (req, res) => {
       await newUser.save();
       return res
         .status(200)
-        .json({ newUser, accessToken: idToken, navigate_to: "Name" });
+        .json({ user: newUser, accessToken: idToken, navigate_to: "Name" });
     }
   }
 };
