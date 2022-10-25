@@ -4,7 +4,7 @@ const admin = require("firebase-admin");
 
 const extractUserIdFromToken = async (auth) => {
   console.log("auth check func =", auth);
-  const userToken = auth.split(" ")[1] || auth;
+  const userToken = auth;
   console.log("user toke auth func", userToken);
   const decodedToken = jwt.decode(userToken);
   console.log("decoded token", decodedToken);
