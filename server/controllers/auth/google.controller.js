@@ -24,8 +24,8 @@ const googleSignIn = async (req, res) => {
       navigate_to: "BottomTab",
     });
   } else {
+    console.log("uid token", idToken);
     const uid = await extractUserIdFromToken(idToken);
-    console.log("uid token", uid);
     if (uid) {
       const newUser = await User.create({
         id: uid,
