@@ -135,11 +135,9 @@ const BlogPostType = new GraphQLObjectType({
     // },
     createdAt: {
       type: GraphQLString,
-      default: Date.now,
     },
     updatedAt: {
       type: GraphQLString,
-      default: Date.now,
     },
     tags: {
       type: new GraphQLList(TagType),
