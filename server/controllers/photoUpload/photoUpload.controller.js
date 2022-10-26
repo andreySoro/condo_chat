@@ -28,8 +28,14 @@ const photoUpload = async (req, res) => {
   //  regarding the upload.
   if (req.body.folder === 0) {
     // If it was a profile image
+    if (req.body.photos.length !== 1) {
+      return res.status(400).send({
+        data: [],
+        error: { message: "Please provide only 1 photo as a profile upload" }
+      });
+    }
 
-    const user = await User.find({ id: UserId }).exec();
+    const user = await User.findOne({ id: UserId });
     const oldUri = user.profileImgUri;
 
     if (oldUri) {
@@ -102,6 +108,5 @@ const profilePhotoUpload = async (req, res) => {
 };
 
 module.exports = {
-  photoUpload,
-  profilePhotoUpload
+  photoUpload
 };
