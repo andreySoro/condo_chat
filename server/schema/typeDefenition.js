@@ -80,7 +80,7 @@ const UserType = new GraphQLObjectType({
         return Address.findOne({ id: parents.address });
       },
     },
-    fcmToken: { type: new GraphQLList(GraphQLString)}
+    fcmToken: { type: new GraphQLList(GraphQLString) },
   }),
 });
 
@@ -134,12 +134,12 @@ const BlogPostType = new GraphQLObjectType({
     //   },
     // },
     createdAt: {
-      type: Date,
-      default: Date.now
+      type: GraphQLString,
+      default: Date.now,
     },
     updatedAt: {
-      type: Date,
-      default: Date.now
+      type: GraphQLString,
+      default: Date.now,
     },
     tags: {
       type: new GraphQLList(TagType),
