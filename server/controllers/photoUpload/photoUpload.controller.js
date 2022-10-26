@@ -1,7 +1,7 @@
 const getUploadedImagesUrl = require("../../utils/imageUpload");
 const User = require("../../models/User");
 
-const admin = require('firebase-admin');
+const admin = require("firebase-admin");
 
 const photoUpload = async (req, res) => {
   const UserId = req.UserId;
@@ -31,7 +31,7 @@ const photoUpload = async (req, res) => {
     if (req.body.photos.length !== 1) {
       return res.status(400).send({
         data: [],
-        error: { message: "Please provide only 1 photo as a profile upload" }
+        error: { message: "Please provide only 1 photo as a profile upload" },
       });
     }
 
@@ -108,5 +108,6 @@ const profilePhotoUpload = async (req, res) => {
 };
 
 module.exports = {
-  photoUpload
+  photoUpload,
+  profilePhotoUpload,
 };
