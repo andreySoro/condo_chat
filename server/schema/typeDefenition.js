@@ -133,6 +133,7 @@ const BlogPostType = new GraphQLObjectType({
     //     return parents.upVote.length - parents.downVote.length;
     //   },
     // },
+
     createdAt: {
       type: GraphQLString,
     },
