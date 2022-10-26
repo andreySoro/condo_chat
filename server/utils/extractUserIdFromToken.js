@@ -1,5 +1,4 @@
 const jwt = require("jsonwebtoken");
-const axios = require("axios");
 const admin = require("firebase-admin");
 
 const extractUserIdFromToken = async (auth) => {
@@ -7,7 +6,6 @@ const extractUserIdFromToken = async (auth) => {
   const userToken = auth.split(" ")[1] || auth;
   console.log("user toke auth func", userToken);
   const decodedToken = jwt.decode(userToken);
-  console.log("decoded token", decodedToken);
   if (!decodedToken) return null;
   if (decodedToken.iss === "https://securetoken.google.com/condochatapp") {
     return decodedToken.user_id;
@@ -18,7 +16,6 @@ const extractUserIdFromToken = async (auth) => {
     // const { email } = data;
     console.log("EMAIL DEOCDED", decodedToken.email);
     const { uid } = await admin.auth().getUserByEmail(decodedToken.email);
-    console.log("uid", uid);
     return uid;
   }
 };

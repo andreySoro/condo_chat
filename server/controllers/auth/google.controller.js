@@ -1,5 +1,4 @@
 const User = require("../../models/User");
-const admin = require("firebase-admin");
 const axios = require("axios");
 const {
   extractUserIdFromToken,
@@ -11,7 +10,6 @@ const googleSignIn = async (req, res) => {
   const { data } = await axios.post(
     `https://oauth2.googleapis.com/tokeninfo?id_token=${idToken}`
   );
-  console.log("userData", data);
   const { email, sub, name, picture } = data;
   const user = await User.findOne({ email: email });
   console.log("user", user);

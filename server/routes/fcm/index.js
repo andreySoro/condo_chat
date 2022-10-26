@@ -7,8 +7,12 @@ const {
 const {
   sendFcmNotification,
 } = require("../../controllers/fcm/sendNotification.controller");
+const {
+  clearFcmToken,
+} = require("../../controllers/fcm/clearFcmToken.controller");
 
 router.post("/updateFcmToken", requireAuth, updateFcmToken);
 router.post("/sendFcmNotification", requireAuth, sendFcmNotification);
+router.post("/clearFcmToken", requireAuth, clearFcmToken);
 
 module.exports = router;
