@@ -41,10 +41,15 @@ const photoUpload = async (req, res) => {
 
       if (oldUri) {
         // Find and delete the old image from our bucket.
-        const bucket = admin.storage().bucket();
-        const oldFile = bucket.file(oldUri);
+        try {
+          const bucket = admin.storage().bucket();
+          const oldFile = bucket.file(oldUri);
 
-        await oldFile.delete();
+          await oldFile.delete();
+        } catch (e) {
+          console.error('Error deleting old image from bucket.');
+          console.error(e);
+        }
       }
 
       // Set the users profileImgUri
@@ -68,6 +73,7 @@ const photoUpload = async (req, res) => {
   } catch (e) {
     console.error('Issue with Image Upload');
     console.error(e);
+    return res.status(500).json({ data: [], error: "Unexpected error uploading image." });
   }
 };
 
