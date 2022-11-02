@@ -13,6 +13,7 @@ const photoUpload = async (req, res) => {
     const folder = ["profile", "posts", "comments"];
 
     console.log(`IMAGE NAME:: ${req.body.photos[0].originalname}`);
+    req.body.photos = req.body.photos[0];
 
     const uploadedImages = await getUploadedImagesUrl(
       req.body.photos,
