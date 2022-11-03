@@ -9,6 +9,7 @@ const { graphqlHTTP } = require("express-graphql");
 const helmet = require("helmet");
 const { schemaWithPermissions } = require("./config/graphql.shield");
 const imageUpload = require("./routes/photoUpload");
+const user = require("./routes/user");
 
 // IMPORTED ROUTES
 const auth = require("./routes/auth/");
@@ -44,6 +45,9 @@ app.use("/upload", imageUpload);
 
 //FCM NOTIFICATIONS
 app.use("/fcm", fcm);
+
+//USER RELATED routes
+app.use("/user", user);
 
 // CONNECT TO DB
 connectDB();
