@@ -23,6 +23,8 @@ const signIn = async (req, res) => {
   const doesUserExist = await doesUserExistCall(req);
 
   const localUser = await User.findOne({ id: user.localId });
+  if (!localUser)
+    return res.status(400).send({ message: "User does not exist in db" });
 
   return res.status(200).send({
     refreshToken: user.refreshToken,

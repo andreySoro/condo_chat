@@ -15,7 +15,7 @@ const photoUpload = async (req, res) => {
     console.log(`IMAGE NAME:: ${req.body.photos[0].originalname}`);
 
     const uploadedImages = await getUploadedImagesUrl(
-      req.body.photos[0],
+      req.body.photos[0] || req.body.photos,
       folder[req.body.folder],
       UserId
     );
@@ -49,7 +49,7 @@ const photoUpload = async (req, res) => {
 
           await oldFile.delete();
         } catch (e) {
-          console.error('Error deleting old image from bucket.');
+          console.error("Error deleting old image from bucket.");
           console.error(e);
         }
       }
@@ -73,9 +73,11 @@ const photoUpload = async (req, res) => {
 
     return res.status(200).json({ uploadedImages });
   } catch (e) {
-    console.error('Issue with Image Upload');
+    console.error("Issue with Image Upload");
     console.error(e);
-    return res.status(500).json({ data: [], error: "Unexpected error uploading image." });
+    return res
+      .status(500)
+      .json({ data: [], error: "Unexpected error uploading image." });
   }
 };
 
