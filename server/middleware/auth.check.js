@@ -28,7 +28,6 @@ const requireAuth = async (req, res, next) => {
 
 //AUTH CHECK FOR GRAPHQL END POINTS
 const graphQlAuth = rule()(async (parents, args, ctx, info) => {
-  return false;
   if (ctx?.headers?.authorization) {
     const token = ctx.headers.authorization.split(" ")[1];
     if (token) {
