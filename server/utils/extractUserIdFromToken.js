@@ -16,6 +16,11 @@ const extractUserIdFromToken = async (auth) => {
     const { uid } = await admin.auth().getUserByEmail(decodedToken.email);
 
     return uid;
+  } else if (
+    decodedToken.iss ===
+    "firebase-adminsdk-zntuj@condochatapp.iam.gserviceaccount.com"
+  ) {
+    return decodedToken.uid;
   }
 };
 
