@@ -9,10 +9,8 @@ const extractUserIdFromToken = async (auth) => {
   if (decodedToken.iss === "https://securetoken.google.com/condochatapp") {
     return decodedToken.user_id;
   } else if (decodedToken.iss === "https://accounts.google.com") {
-    // const { data } = await axios.post(
-    //   `https://oauth2.googleapis.com/tokeninfo?id_token=${userToken}`
-    // );
-    // const { email } = data;
+    //this method and provider depricated since tokens for google customly generated
+
     const { uid } = await admin.auth().getUserByEmail(decodedToken.email);
 
     return uid;
