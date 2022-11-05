@@ -3,6 +3,7 @@ const axios = require("axios");
 const {
   extractUserIdFromToken,
 } = require("../../utils/extractUserIdFromToken");
+const admin = require("firebase-admin");
 
 const googleSignIn = async (req, res) => {
   const { idToken } = req.body;
