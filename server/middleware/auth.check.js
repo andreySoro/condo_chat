@@ -10,11 +10,17 @@ const requireAuth = async (req, res, next) => {
   }
 
   const decodedToken = jwt.decode(token);
-  if (!decodedToken && !decodedToken?.exp && decodedToken?.email) {
+  if (
+    !decodedToken &&
+    !decodedToken?.exp &&
+    (!decodedToken?.email || !decodedToken?.claims?.email)
+  ) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
-  const existingUser = await User.findOne({ email: decodedToken.email });
+  const existingUser = await User.findOne({
+    email: decodedToken.email || decodedToken.claims.email,
+  });
   if (
     new Date(decodedToken.exp * 1000).getTime() > Date.now() &&
     existingUser
@@ -33,7 +39,9 @@ const graphQlAuth = rule()(async (parents, args, ctx, info) => {
     if (token) {
       const decodedToken = jwt.decode(token);
       if (!decodedToken) return false;
-      const existingUser = await User.findOne({ email: decodedToken.email });
+      let existingUser = await User.findOne({
+        email: decodedToken.email || decodedToken.claims.email,
+      });
 
       if (
         decodedToken &&
