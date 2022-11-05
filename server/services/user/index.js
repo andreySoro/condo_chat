@@ -14,8 +14,8 @@ const doesUserExistCall = async (req) => {
 const createNewUserCall = async (req) => {
   return await axios
     .post("/accounts:signUp?key=" + process.env.FIREBASE_API_KEY, {
-      email: req.body.email,
-      password: req.body.password,
+      email: req.body.email.trim(),
+      password: req.body.password.trim(),
       returnSecureToken: true,
     })
     .then((res) => res.data)
