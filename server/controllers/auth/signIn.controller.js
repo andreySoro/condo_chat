@@ -3,7 +3,7 @@ const { signInWithPasswordCall } = require("../../services/auth");
 const { doesUserExistCall } = require("../../services/user");
 
 const signIn = async (req, res) => {
-  if (!req.body || !req.body.email.trim() || !req.body.password.trim()) {
+  if (!req.body || !req.body.email || !req.body.password) {
     res
       .status(400)
       .send({ message: "Invalid request, incorrect email or password" });

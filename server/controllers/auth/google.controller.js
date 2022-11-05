@@ -15,7 +15,9 @@ const googleSignIn = async (req, res) => {
   const { email, sub, name, picture } = data;
   const user = await User.findOne({ email: email });
   if (user) {
-    const token = await admin.auth().createCustomToken(user.id.toString());
+    const token = await admin
+      .auth()
+      .createCustomToken(user.id.toString(), { email });
     return res.status(200).json({
       registered: true,
       accessToken: token,
