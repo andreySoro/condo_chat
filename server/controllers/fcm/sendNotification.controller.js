@@ -3,6 +3,7 @@ const admin = require("firebase-admin");
 
 const sendFcmNotification = async (req, res) => {
   const userIds = req.body.userIds;
+
   const { message, title, chatId } = req.body;
 
   const listOfFcmTokens = () => {
@@ -12,6 +13,11 @@ const sendFcmNotification = async (req, res) => {
     });
   };
   const result = await Promise.all(listOfFcmTokens()).then((res) => res.flat());
+
+  if (!result || result.length === 0)
+    return res
+      .status(400)
+      .send({ message: "FCM not sent, no users found or no tokens provided." });
   await admin
     .messaging()
     .sendToDevice(result, {

@@ -218,6 +218,7 @@ const blogPostQueries = {
     args: { id: { type: GraphQLID } },
     async resolve(parents, args, ctx) {
       const userId = ctx?.headers?.userId;
+
       if (userId) {
         return BlogPost.findOne({ id: args.id }).then((blogPost) => {
           return {
@@ -226,6 +227,18 @@ const blogPostQueries = {
             downVote: blogPost.downVote.filter((item) => item == userId),
           };
         });
+      }
+    },
+  },
+  getBlogPostByUserId: {
+    type: new GraphQLList(BlogPostType),
+    args: { userId: { type: GraphQLID } },
+    async resolve(parents, args, ctx) {
+      console.log("headers", ctx.headers.userId);
+      const userId = ctx?.headers?.userId;
+      if (userId) {
+        const postsArray = await BlogPost.find({ author: userId });
+        return postsArray;
       }
     },
   },
