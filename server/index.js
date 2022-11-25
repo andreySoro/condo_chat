@@ -54,7 +54,7 @@ app.use("/fcm", fcm);
 app.use("/user", user);
 
 app.get("/", (req, res) => {
-  res.status(200).send("Welcome to CondoChatApp");
+  res.status(200).send("This is Condochat App");
 });
 
 // CONNECT TO DB
