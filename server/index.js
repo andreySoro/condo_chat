@@ -10,6 +10,8 @@ const helmet = require("helmet");
 const { schemaWithPermissions } = require("./config/graphql.shield");
 const imageUpload = require("./routes/photoUpload");
 const user = require("./routes/user");
+const { logger } = require("./middleware/logger");
+const errorHandler = require("./middleware/errorHandler");
 
 // IMPORTED ROUTES
 const auth = require("./routes/auth/");
@@ -26,6 +28,8 @@ admin.initializeApp({
 
 // BACKEND INITIALIZATION-
 const app = express();
+app.use(logger);
+
 app.use(
   helmet({
     contentSecurityPolicy:
@@ -49,6 +53,10 @@ app.use("/fcm", fcm);
 //USER RELATED routes
 app.use("/user", user);
 
+app.get("/", (req, res) => {
+  res.status(200).send("Welcome to CondoChatApp");
+});
+
 // CONNECT TO DB
 connectDB();
 
@@ -65,5 +73,7 @@ app.use(
         : false,
   })
 );
+
+app.use(errorHandler);
 
 app.listen(port, console.log(`Server running on port ${port}`));
