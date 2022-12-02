@@ -12,6 +12,7 @@ const imageUpload = require("./routes/photoUpload");
 const user = require("./routes/user");
 const { logger } = require("./middleware/logger");
 const errorHandler = require("./middleware/errorHandler");
+const User = require("./models/User");
 
 // IMPORTED ROUTES
 const auth = require("./routes/auth/");
@@ -55,6 +56,11 @@ app.use("/user", user);
 
 app.get("/", (req, res) => {
   res.status(200).send("This is the Condochat App");
+});
+
+app.get("/loadTest", async (req, res) => {
+  const users = await User.findOne({ email: "shadow198rus@gmail.com" });
+  res.status(200).json({ users });
 });
 
 // CONNECT TO DB
