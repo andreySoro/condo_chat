@@ -1,0 +1,4 @@
+2022-11-23 16:49:01	599f840e-c1b3-43c4-ba85-c35cee3c8dc0	{Error: Not allowed by CORS	OPTIONS	/auth	https://www.google.ca}
+2022-11-23 16:49:01	0ca5b377-89ec-4af1-bb9d-fd21e9146125	{Error: Not allowed by CORS	GET	/auth	https://www.google.ca}
+2022-11-23 16:49:11	6867628c-7f7c-445f-96d9-ce8f81e72c49	{Error: Not allowed by CORS	OPTIONS	/	https://www.google.ca}
+2022-11-23 16:49:11	bc52dff4-5415-4302-b949-593c2f44c7cc	{Error: Not allowed by CORS	GET	/	https://www.google.ca}

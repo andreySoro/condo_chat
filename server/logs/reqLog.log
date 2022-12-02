@@ -1,0 +1,19 @@
+
+2022-11-23 16:45:26	dd50dccf-8fa3-4db2-9367-3b275de5369a	{OPTIONS	/auth	::1	https://www.google.ca}
+2022-11-23 16:45:26	3e9e925a-5ca7-4064-b50b-3dfcb23202f2	{GET	/auth	::1	https://www.google.ca}
+2022-11-23 16:46:16	7053c2f7-c0e9-451f-b6c4-897709e39ca3	{POST	/upload/image	::ffff:127.0.0.1	undefined}
+2022-11-23 16:48:44	1c64db99-060f-4e99-99fc-2a5b670a1f77	{OPTIONS	/auth	::1	https://www.google.ca}
+2022-11-23 16:48:44	664a5b2d-7088-46e4-987a-55353cb1ca9f	{GET	/auth	::1	https://www.google.ca}
+2022-11-23 16:49:01	ddd3366c-f205-4fe3-8401-d4d367b5e3af	{OPTIONS	/auth	::1	https://www.google.ca}
+2022-11-23 16:49:01	9939f85c-5919-472c-933a-3321521d93c0	{GET	/auth	::1	https://www.google.ca}
+2022-11-23 16:49:11	ff345243-7da9-4d3b-b2bc-a99605f960ad	{OPTIONS	/	::1	https://www.google.ca}
+2022-11-23 16:49:11	414438b6-bbda-481a-9749-64f1b3188eba	{GET	/	::1	https://www.google.ca}
+2022-11-24 16:49:33	7d6a5ddc-7926-411a-80d7-9ef68448960d	{GET	/	::1	undefined}
+2022-11-24 16:49:33	ff38aea3-97a6-4588-bacf-a5670c328a6a	{GET	/favicon.ico	::1	undefined}
+2022-11-24 17:45:22	9adc5b8c-8583-4089-92d2-58256a612b47	{GET	/graphql	::1	undefined}
+2022-11-24 17:45:23	ccb368ec-ed30-4ea2-861e-bce0931daa7d	{POST	/graphql?	::1	http://localhost:5050}
+2022-11-28 19:32:25	6ccc555c-b2a4-4b01-b330-9a63b5817220	{GET	/graphql	::1	undefined}
+2022-11-28 19:32:25	bc341110-33d3-4ace-a780-b89e4b102002	{POST	/graphql?	::1	http://localhost:5050}
+2022-11-28 19:32:25	e6d09969-97b8-45b0-95a7-959ecc9490b7	{GET	/favicon.ico	::1	undefined}
+2022-11-28 19:32:29	7ddb54ab-eb40-4c98-80d9-269dbf77197b	{POST	/graphql?	::1	http://localhost:5050}
+2022-11-28 19:33:06	356720b9-6745-41a6-a0f7-f0d06a8760b3	{POST	/graphql?	::1	http://localhost:5050}

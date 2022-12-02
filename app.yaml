@@ -1,0 +1,22 @@
+runtime: nodejs16
+
+env_variables:
+  NODE_ENV: "development"
+  MONGO_URI: "mongodb+srv://admin:admin@cluster0.skst1ma.mongodb.net/?retryWrites=true&w=majority&dbName=condochat"
+  FIREBASE_API_KEY: "AIzaSyDo1IJLuYzhlx3zrLXtiu84_BL8Tg_6G8k"
+  FIREBASE_AUTH_DOMAIN: "condochatapp.firebaseapp.com"
+  BASE_URL: "https://identitytoolkit.googleapis.com/v1"
+  GRAPHI_QL_PASSWORD: "superSecure1122"
+  GOOGLE_CLIENT_ID: "358716272565-hva0s1h3ujp4i5gt4vv7b3mdmsd8boij.apps.googleusercontent.com"
+  GOOGLE_CLIENT_SECRET: "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"
+
+automatic_scaling:
+  min_idle_instances: 0
+  max_idle_instances: 0
+  min_pending_latency: automatic
+  max_pending_latency: automatic
+  min_instances: 0
+  max_instances: 2
+  target_cpu_utilization: 0.90
+  target_throughput_utilization: 0.90
+  max_concurrent_requests: 999
