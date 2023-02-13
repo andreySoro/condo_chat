@@ -71,6 +71,8 @@ const refreshTokenCall = async (req) => {
       grant_type: "refresh_token",
       refresh_token: refreshToken,
     });
+  } else {
+    return Promise.reject("Invalid refresh token");
   }
 };
 
