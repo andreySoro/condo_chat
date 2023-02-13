@@ -9,7 +9,8 @@ const sendFcmNotification = async (req, res) => {
   const listOfFcmTokens = () => {
     return userIds.map(async (userId) => {
       const user = await User.findOne({ id: userId });
-      return user.fcmTokens;
+      if (!user) return null;
+      return user?.fcmTokens;
     });
   };
   const result = await Promise.all(listOfFcmTokens()).then((res) => res.flat());
