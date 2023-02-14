@@ -83,6 +83,7 @@ const UserType = new GraphQLObjectType({
     },
     fcmToken: { type: new GraphQLList(GraphQLString) },
     contentFilter: { type: GraphQLBoolean },
+    blockedUsers: { type: new GraphQLList(GraphQLString) },
   }),
 });
 
@@ -149,6 +150,7 @@ const BlogPostType = new GraphQLObjectType({
       },
     },
     imageUrl: { type: GraphQLString },
+    reports: { type: new GraphQLList(GraphQLString) },
   }),
 });
 

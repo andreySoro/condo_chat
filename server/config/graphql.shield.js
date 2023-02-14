@@ -37,6 +37,7 @@ const permissions = shield(
       addComment: graphQlAuth,
       deleteComment: graphQlAuth,
       addTag: graphQlAuth,
+      reportBlogPost: graphQlAuth,
     },
   },
   {
