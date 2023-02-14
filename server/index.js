@@ -13,7 +13,6 @@ const user = require("./routes/user");
 const { logger } = require("./middleware/logger");
 const errorHandler = require("./middleware/errorHandler");
 const User = require("./models/User");
-const TestDB = require("./models/TestDB");
 
 // IMPORTED ROUTES
 const auth = require("./routes/auth/");
@@ -58,6 +57,17 @@ app.use("/user", user);
 app.get("/", (req, res) => {
   res.status(200).send("This is the Condochat App");
 });
+
+// UTILITIES (can be removed, not used anywhere)
+// app.get("/utilities", async (req, res) => {
+//   try {
+//     await User.updateMany({}, { $set: { blockedUsers: [] } });
+//     return res.status(200).json({ message: "Users were updated" });
+//   } catch (error) {
+//     console.log("Users were not updated");
+//     return res.status(500).json({ message: "Users were not updated", error });
+//   }
+// });
 
 // CONNECT TO DB
 connectDB();

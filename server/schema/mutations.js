@@ -39,6 +39,7 @@ const userMutations = {
       unitNumber: { type: GraphQLString },
       address: { type: GraphQLID },
       contentFilter: { type: GraphQLBoolean },
+      blockedUsers: { type: new GraphQLList(GraphQLString) },
     },
     resolve(parents, args, ctx) {
       const argsId = args.id;
@@ -52,6 +53,7 @@ const userMutations = {
             address: args.address,
             unitNumber: args.unitNumber,
             contentFilter: args.contentFilter,
+            blockedUsers: args.blockedUsers,
           },
         },
         { new: true }
@@ -133,21 +135,6 @@ const cityMutations = {
   },
 };
 
-// const updateUserInfo = async (args) => {
-//   console.log("updating user", args);
-//   await User.findOneAndUpdate(
-//     { id: args.id },
-//     {
-//       $set: {
-//         name: args.userName,
-//         email: args.email,
-//         address: args.address,
-//         unitNumber: args.unitNumber,
-//       },
-//     },
-//     { new: true }
-//   );
-// };
 //ADDRESS MUTATIONS
 const addressMutations = {
   createAddress: {
@@ -303,6 +290,38 @@ const blogPostMutations = {
         );
       }
       return comment;
+    },
+  },
+  reportBlogPost: {
+    type: BlogPostType,
+    args: {
+      postId: { type: GraphQLID },
+    },
+    async resolve(parents, args, ctx) {
+      const userId = ctx?.headers?.userId;
+      //USER CHECK
+      const doesUserExists = await User.findOne({ id: userId });
+      if (!doesUserExists) throw new Error("User does not exist");
+      //POST CHECK
+      const post = await BlogPost.findOne({ id: args.postId });
+      if (!post) throw new Error("Post does not exist");
+      //AUTHOR CHECK
+      if (post.author === userId)
+        throw new Error("You cannot report your post");
+      //IS ALREADY REPORTED CHECK
+      const isReported = post.reports.includes(userId);
+      if (isReported) throw new Error("You already reported this post");
+      //REPORT FUNCTIONALITY
+      const postStuff = await BlogPost.findOneAndUpdate(
+        { id: args.postId },
+        {
+          $set: {
+            reports: [...post.reports, userId],
+          },
+        },
+        { new: true }
+      );
+      return postStuff;
     },
   },
 };

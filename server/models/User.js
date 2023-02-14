@@ -13,6 +13,7 @@ const UserSchema = new mongoose.Schema({
   reputation: { type: Number, default: 0 },
   fcmTokens: { type: [String], default: [] },
   contentFilter: { type: Boolean, default: false },
+  blockedUsers: { type: [String], default: [] },
 });
 
 module.exports = mongoose.model("User", UserSchema);

@@ -200,13 +200,17 @@ const blogPostQueries = {
           // .limit(10)
           .then((blogPost) => {
             return blogPost.map((individualPosts) => {
-              return {
-                ...individualPosts._doc,
-                upVote: individualPosts.upVote.filter((item) => item == userId),
-                downVote: individualPosts.downVote.filter(
-                  (item) => item == userId
-                ),
-              };
+              if (individualPosts.reports.length < 5) {
+                return {
+                  ...individualPosts._doc,
+                  upVote: individualPosts.upVote.filter(
+                    (item) => item == userId
+                  ),
+                  downVote: individualPosts.downVote.filter(
+                    (item) => item == userId
+                  ),
+                };
+              }
             });
           });
         return postsArray;
@@ -234,7 +238,6 @@ const blogPostQueries = {
     type: new GraphQLList(BlogPostType),
     args: { userId: { type: GraphQLID } },
     async resolve(parents, args, ctx) {
-      console.log("headers", ctx.headers.userId);
       const userId = ctx?.headers?.userId;
       if (userId) {
         const postsArray = await BlogPost.find({ author: userId });
