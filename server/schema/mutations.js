@@ -5,6 +5,7 @@ const {
   GraphQLID,
   GraphQLInt,
   GraphQLString,
+  GraphQLBoolean,
 } = require("graphql");
 const {
   UserType,
@@ -37,16 +38,20 @@ const userMutations = {
       email: { type: GraphQLString },
       unitNumber: { type: GraphQLString },
       address: { type: GraphQLID },
+      contentFilter: { type: GraphQLBoolean },
     },
-    resolve(parents, args) {
+    resolve(parents, args, ctx) {
+      const argsId = args.id;
+      const user = ctx.headers.userId;
       return User.findOneAndUpdate(
-        { id: args.id },
+        { id: argsId ? argsId : user },
         {
           $set: {
             name: args.name,
             email: args.email,
             address: args.address,
             unitNumber: args.unitNumber,
+            contentFilter: args.contentFilter,
           },
         },
         { new: true }

@@ -59,45 +59,6 @@ app.get("/", (req, res) => {
   res.status(200).send("This is the Condochat App");
 });
 
-app.post("/loadTest", async (req, res) => {
-  const { mandate, vote } = req.body;
-
-  if (mandate && vote) {
-    const mandateToVote = await TestDB.findOne({ mandate });
-
-    if (mandateToVote) {
-      if (vote === "for") {
-        mandateToVote.votesFor.push("test");
-        await mandateToVote.save();
-      } else if (vote === "against") {
-        mandateToVote.votesAgainst.push("test");
-        await mandateToVote.save();
-      }
-      res.status(200).json({ message: "Vote added" });
-    } else {
-      res.status(400).json({ message: "Mandate not found" });
-    }
-  }
-});
-app.post("/deleteTest", async (req, res) => {
-  const { mandate } = req.body;
-  if (mandate) {
-    const mandateToDelete = await TestDB.findOne({ mandate });
-    console.log("mandate to delete", mandateToDelete);
-    const result = [];
-    if (mandateToDelete) {
-      mandateToDelete.votesFor.map((item) => {
-        if (item !== "test") {
-          result.push(item);
-        }
-      });
-      mandateToDelete.votesFor = result;
-      await mandateToDelete.save();
-      res.status(200).json({ message: "Mandate deleted" });
-    }
-  }
-});
-
 // CONNECT TO DB
 connectDB();
 
