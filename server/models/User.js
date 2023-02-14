@@ -11,7 +11,8 @@ const UserSchema = new mongoose.Schema({
   profileImgUri: { type: String },
   address: { type: Number },
   reputation: { type: Number, default: 0 },
-  fcmTokens: { type: [String], default:[] },
+  fcmTokens: { type: [String], default: [] },
+  contentFilter: { type: Boolean, default: false },
 });
 
 module.exports = mongoose.model("User", UserSchema);

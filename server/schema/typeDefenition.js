@@ -5,6 +5,7 @@ const {
   GraphQLID,
   GraphQLInt,
   GraphQLString,
+  GraphQLBoolean,
 } = require("graphql");
 const Country = require("../models/Country");
 const Province = require("../models/Provinces");
@@ -81,6 +82,7 @@ const UserType = new GraphQLObjectType({
       },
     },
     fcmToken: { type: new GraphQLList(GraphQLString) },
+    contentFilter: { type: GraphQLBoolean },
   }),
 });
 
